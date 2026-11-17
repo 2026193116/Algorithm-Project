@@ -25,6 +25,8 @@ EXPECTED_ALGORITHMS = ["Dense", "CSR", "CSC"]
 EXPECTED_ROWS_PER_LANGUAGE = 60
 EXPECTED_TOTAL_ROWS = 120
 
+DENSITY_TOLERANCE = 1e-8
+
 
 # ==================================================
 # 2. 검사 결과 저장
@@ -56,12 +58,15 @@ if not INPUT_FILE.exists():
         f"CSV 파일을 찾을 수 없습니다: {INPUT_FILE}"
     )
 
+
 required_columns = [
     "language",
     "algorithm",
     "rows",
     "cols",
     "density",
+    "nnz",
+    "actual_density",
     "conversion_ms",
     "matvec_ms",
     "memory_bytes",
@@ -102,6 +107,8 @@ with open(
                 "rows": int(row["rows"]),
                 "cols": int(row["cols"]),
                 "density": float(row["density"]),
+                "nnz": int(row["nnz"]),
+                "actual_density": float(row["actual_density"]),
                 "conversion_ms": float(row["conversion_ms"]),
                 "matvec_ms": float(row["matvec_ms"]),
                 "memory_bytes": int(row["memory_bytes"]),
@@ -110,7 +117,7 @@ with open(
 
             data.append(item)
 
-        except (ValueError, TypeError):
+        except (ValueError, TypeError, KeyError):
             add_error(
                 f"{line_number}번째 행의 데이터 형식이 잘못되었습니다."
             )
@@ -173,7 +180,9 @@ for row in data:
     groups[key].append(row["algorithm"])
 
 
-expected_conditions = len(EXPECTED_SIZES) * len(EXPECTED_DENSITIES)
+expected_conditions = (
+    len(EXPECTED_SIZES) * len(EXPECTED_DENSITIES)
+)
 
 for language in EXPECTED_LANGUAGES:
 
@@ -203,6 +212,18 @@ for language in EXPECTED_LANGUAGES:
             f"{len(actual_conditions)}개입니다."
         )
 
+    expected_condition_set = {
+        (size, size, density)
+        for size in EXPECTED_SIZES
+        for density in EXPECTED_DENSITIES
+    }
+
+    if actual_conditions != expected_condition_set:
+        add_error(
+            f"{language}의 행렬 크기 또는 Density 조건이 "
+            f"설정된 실험 조건과 일치하지 않습니다."
+        )
+
 
 # ==================================================
 # 7. C와 Python의 실험 조건 비교
@@ -217,6 +238,7 @@ for language in EXPECTED_LANGUAGES:
         for row in data
         if row["language"] == language
     }
+
 
 if (
     language_conditions["C"]
@@ -261,9 +283,9 @@ for row in data:
 
     values = [
         row["density"],
+        row["actual_density"],
         row["conversion_ms"],
-        row["matvec_ms"],
-        row["memory_bytes"]
+        row["matvec_ms"]
     ]
 
     if not all(math.isfinite(value) for value in values):
@@ -275,15 +297,20 @@ for row in data:
         or row["cols"] <= 0
         or row["density"] < 0
         or row["density"] > 1
+        or row["actual_density"] < 0
+        or row["actual_density"] > 1
+        or row["nnz"] < 0
+        or row["nnz"] > row["rows"] * row["cols"]
         or row["conversion_ms"] < 0
         or row["matvec_ms"] <= 0
         or row["memory_bytes"] <= 0
+        or row["valid"] not in (0, 1)
     ):
         invalid_measurements.append(row)
 
 if not invalid_measurements:
     add_check(
-        "실행 시간, Density, 메모리 값이 유효한 범위에 있습니다."
+        "실행 시간, Density, nnz 및 메모리 값이 유효한 범위에 있습니다."
     )
 else:
     add_error(
@@ -293,7 +320,95 @@ else:
 
 
 # ==================================================
-# 10. 중복 데이터 검증
+# 10. nnz 및 actual_density 관계 검증
+# ==================================================
+
+invalid_density_rows = []
+
+for row in data:
+
+    if row["rows"] <= 0 or row["cols"] <= 0:
+        continue
+
+    expected_actual_density = (
+        row["nnz"] / (row["rows"] * row["cols"])
+    )
+
+    if not math.isclose(
+        row["actual_density"],
+        expected_actual_density,
+        rel_tol=0,
+        abs_tol=DENSITY_TOLERANCE
+    ):
+        invalid_density_rows.append(row)
+
+
+if not invalid_density_rows:
+    add_check(
+        "모든 행에서 actual_density = nnz / (rows × cols) 관계가 일치합니다."
+    )
+else:
+    add_error(
+        f"nnz와 actual_density가 일치하지 않는 행이 "
+        f"{len(invalid_density_rows)}개 있습니다."
+    )
+
+
+# ==================================================
+# 11. 알고리즘별 nnz 및 actual_density 일관성 검증
+# ==================================================
+
+inconsistent_groups = []
+
+density_groups = defaultdict(list)
+
+for row in data:
+
+    key = (
+        row["language"],
+        row["rows"],
+        row["cols"],
+        row["density"]
+    )
+
+    density_groups[key].append(row)
+
+
+for key, rows_in_group in density_groups.items():
+
+    if len(rows_in_group) != len(EXPECTED_ALGORITHMS):
+        continue
+
+    nnz_values = {
+        row["nnz"]
+        for row in rows_in_group
+    }
+
+    actual_density_values = {
+        row["actual_density"]
+        for row in rows_in_group
+    }
+
+    if (
+        len(nnz_values) != 1
+        or len(actual_density_values) != 1
+    ):
+        inconsistent_groups.append(key)
+
+
+if not inconsistent_groups:
+    add_check(
+        "동일한 실험 조건에서 Dense, CSR, CSC의 nnz 및 actual_density가 일치합니다."
+    )
+else:
+    add_error(
+        f"알고리즘 간 nnz 또는 actual_density가 일치하지 않는 "
+        f"실험 조건이 {len(inconsistent_groups)}개 있습니다."
+    )
+
+
+# ==================================================
+# 12. 중복 데이터 검증
 # ==================================================
 
 unique_keys = set()
@@ -314,6 +429,7 @@ for row in data:
     else:
         unique_keys.add(key)
 
+
 if not duplicates:
     add_check("중복된 실험 데이터가 없습니다.")
 else:
@@ -323,22 +439,13 @@ else:
 
 
 # ==================================================
-# 11. 추가 검증이 필요한 사항
+# 13. 추가 검증이 필요한 사항
 # ==================================================
 
-header = set(required_columns)
-
-if "actual_density" not in header:
-    add_warning(
-        "CSV에 actual_density가 없습니다. "
-        "현재 density는 목표 Density로 취급해야 합니다."
-    )
-
-if "nnz" not in header:
-    add_warning(
-        "CSV에 nnz가 없습니다. "
-        "실제 비제로 원소 개수를 직접 확인할 수 없습니다."
-    )
+add_warning(
+    "C와 Python은 서로 다른 난수 생성 방식을 사용하므로 "
+    "동일한 목표 Density에서도 nnz가 다를 수 있습니다."
+)
 
 add_warning(
     "현재 CSV만으로 C와 Python이 동일한 입력 행렬을 "
@@ -352,7 +459,7 @@ add_warning(
 
 
 # ==================================================
-# 12. 검증 결과 출력 및 저장
+# 14. 검증 결과 출력 및 저장
 # ==================================================
 
 summary = []
