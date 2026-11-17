@@ -11,15 +11,16 @@ from csc import dense_to_csc, csc_matvec
 from benchmark import benchmark_matvec
 
 
-# 실험 조건
+# ==================================================
+# 1. 실험 조건
+# ==================================================
+
 MATRIX_SIZES = [100, 500, 1000, 2000]
 
+# Density: 1% ~ 50%, 1% 간격
 DENSITIES = [
-    0.01,
-    0.05,
-    0.10,
-    0.30,
-    0.50
+    i / 100
+    for i in range(1, 51)
 ]
 
 # 행렬 구조
@@ -33,10 +34,14 @@ STRUCTURES = [
 # 변환 시간 측정 반복 횟수
 CONVERSION_REPEATS = 20
 
-OUTPUT_PATH = "report/python_structure_results.csv"
+# 결과 파일
+OUTPUT_PATH = "report/python_density_results.csv"
 
 
-# 변환 시간 중앙값 측정
+# ==================================================
+# 2. 변환 시간 중앙값 측정
+# ==================================================
+
 def measure_conversion(
     conversion_function,
     repeats=CONVERSION_REPEATS
@@ -58,13 +63,15 @@ def measure_conversion(
 
         times.append((end - start) * 1000)
 
-        # 변환 결과 참조 해제
         del converted
 
     return statistics.median(times)
 
 
-# 두 결과의 정확성 비교
+# ==================================================
+# 3. 정확성 비교
+# ==================================================
+
 def compare_results(
     result,
     expected,
@@ -82,7 +89,10 @@ def compare_results(
     return True
 
 
-# CSV에 저장할 데이터 생성
+# ==================================================
+# 4. CSV 데이터 생성
+# ==================================================
+
 def make_csv_row(
     structure,
     algorithm,
@@ -113,7 +123,10 @@ def make_csv_row(
     }
 
 
-# 하나의 실험 조건 실행
+# ==================================================
+# 5. 하나의 실험 조건 실행
+# ==================================================
+
 def run_test(rows, cols, density, structure):
 
     print("\n====================================")
@@ -205,14 +218,14 @@ def run_test(rows, cols, density, structure):
     if not csr_valid or not csc_valid:
         raise RuntimeError("Correctness verification failed.")
 
-    # 9. 기존 benchmark.py를 활용한 성능 측정
+    # 9. 성능 측정
     benchmark_results = benchmark_matvec(A, x)
 
     dense_stats = benchmark_results["Dense"]
     csr_stats = benchmark_results["CSR"]
     csc_stats = benchmark_results["CSC"]
 
-    # 10. 화면 출력
+    # 10. 성능 결과 출력
     print("------------------------------------")
 
     print(
@@ -306,10 +319,12 @@ def run_test(rows, cols, density, structure):
     return rows_to_save
 
 
-# 전체 실험 실행
+# ==================================================
+# 6. 전체 실험 실행
+# ==================================================
+
 def main():
 
-    # report 폴더 생성
     os.makedirs("report", exist_ok=True)
 
     all_results = []
@@ -322,10 +337,12 @@ def main():
 
     current_test = 0
 
-    print("Starting Python structure benchmark...")
+    print("Starting Python density benchmark...")
+    print("Density range: 1% ~ 50%")
+    print("Density interval: 1%")
     print(f"Total experiment conditions: {total_tests}")
 
-    # 전체 실험 실행
+    # 전체 실험
     for size in MATRIX_SIZES:
 
         for density in DENSITIES:
@@ -379,7 +396,7 @@ def main():
         writer.writerows(all_results)
 
     print("\n====================================")
-    print("All Python structure benchmark tests completed!")
+    print("All Python density benchmark tests completed!")
     print(f"Total experiment conditions: {total_tests}")
     print(f"Total data rows: {len(all_results)}")
     print(f"Results saved to {OUTPUT_PATH}")
