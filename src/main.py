@@ -22,10 +22,18 @@ DENSITIES = [
     0.50
 ]
 
+# 행렬 구조
+STRUCTURES = [
+    "random",
+    "banded",
+    "row",
+    "block"
+]
+
 # 변환 시간 측정 반복 횟수
 CONVERSION_REPEATS = 20
 
-OUTPUT_PATH = "report/python_results.csv"
+OUTPUT_PATH = "report/python_structure_results.csv"
 
 
 # 변환 시간 중앙값 측정
@@ -37,7 +45,8 @@ def measure_conversion(
     times = []
 
     # 워밍업
-    conversion_function()
+    converted = conversion_function()
+    del converted
 
     for _ in range(repeats):
 
@@ -75,6 +84,7 @@ def compare_results(
 
 # CSV에 저장할 데이터 생성
 def make_csv_row(
+    structure,
     algorithm,
     rows,
     cols,
@@ -89,6 +99,7 @@ def make_csv_row(
 
     return {
         "language": "Python",
+        "structure": structure.capitalize(),
         "algorithm": algorithm,
         "rows": rows,
         "cols": cols,
@@ -103,19 +114,21 @@ def make_csv_row(
 
 
 # 하나의 실험 조건 실행
-def run_test(rows, cols, density):
+def run_test(rows, cols, density, structure):
 
     print("\n====================================")
 
     print(f"Matrix size: {rows} x {cols}")
+    print(f"Structure: {structure.capitalize()}")
     print(f"Target density: {density * 100:.2f}%")
 
-    # 1. 행렬 생성
+    # 1. 지정된 구조의 행렬 생성
     A = generate_matrix(
         rows,
         cols,
         density,
-        seed=42
+        seed=42,
+        structure=structure
     )
 
     # 2. 실제 비제로 원소 개수 계산
@@ -141,11 +154,12 @@ def run_test(rows, cols, density):
     # 5. Dense 계산
     dense_result = dense_matvec(A, x)
 
-    # 6. CSR 변환 및 계산
+    # 6. CSR 변환 시간 측정
     csr_conversion_ms = measure_conversion(
         lambda: dense_to_csr(A)
     )
 
+    # CSR 변환 및 계산
     csr_data, csr_indices, csr_indptr = dense_to_csr(A)
 
     csr_result = csr_matvec(
@@ -155,11 +169,12 @@ def run_test(rows, cols, density):
         x
     )
 
-    # 7. CSC 변환 및 계산
+    # 7. CSC 변환 시간 측정
     csc_conversion_ms = measure_conversion(
         lambda: dense_to_csc(A)
     )
 
+    # CSC 변환 및 계산
     csc_data, csc_indices, csc_indptr = dense_to_csc(A)
 
     csc_result = csc_matvec(
@@ -246,6 +261,7 @@ def run_test(rows, cols, density):
     rows_to_save = [
 
         make_csv_row(
+            structure,
             "Dense",
             rows,
             cols,
@@ -259,6 +275,7 @@ def run_test(rows, cols, density):
         ),
 
         make_csv_row(
+            structure,
             "CSR",
             rows,
             cols,
@@ -272,6 +289,7 @@ def run_test(rows, cols, density):
         ),
 
         make_csv_row(
+            structure,
             "CSC",
             rows,
             cols,
@@ -296,34 +314,43 @@ def main():
 
     all_results = []
 
-    total_tests = len(MATRIX_SIZES) * len(DENSITIES)
+    total_tests = (
+        len(MATRIX_SIZES)
+        * len(DENSITIES)
+        * len(STRUCTURES)
+    )
+
     current_test = 0
 
-    print("Starting Python benchmark...")
+    print("Starting Python structure benchmark...")
     print(f"Total experiment conditions: {total_tests}")
 
-    # 20개 실험 조건 실행
+    # 전체 실험 실행
     for size in MATRIX_SIZES:
 
         for density in DENSITIES:
 
-            current_test += 1
+            for structure in STRUCTURES:
 
-            print(
-                f"\n[Test {current_test}/{total_tests}]"
-            )
+                current_test += 1
 
-            results = run_test(
-                size,
-                size,
-                density
-            )
+                print(
+                    f"\n[Test {current_test}/{total_tests}]"
+                )
 
-            all_results.extend(results)
+                results = run_test(
+                    size,
+                    size,
+                    density,
+                    structure
+                )
+
+                all_results.extend(results)
 
     # CSV 저장
     fieldnames = [
         "language",
+        "structure",
         "algorithm",
         "rows",
         "cols",
@@ -352,7 +379,8 @@ def main():
         writer.writerows(all_results)
 
     print("\n====================================")
-    print("All Python benchmark tests completed!")
+    print("All Python structure benchmark tests completed!")
+    print(f"Total experiment conditions: {total_tests}")
     print(f"Total data rows: {len(all_results)}")
     print(f"Results saved to {OUTPUT_PATH}")
 
