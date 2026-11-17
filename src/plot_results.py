@@ -12,11 +12,9 @@ import matplotlib.pyplot as plt
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# 실험 결과 CSV 파일
 REPORT_DIR = BASE_DIR / "report"
-INPUT_FILE = REPORT_DIR / "combined_results.csv"
+INPUT_FILE = REPORT_DIR / "combined_structure_results.csv"
 
-# 그래프 저장 폴더
 FIGURE_DIR = BASE_DIR / "figures"
 FIGURE_DIR.mkdir(parents=True, exist_ok=True)
 
@@ -32,11 +30,18 @@ if not INPUT_FILE.exists():
         f"실험 결과 파일을 찾을 수 없습니다: {INPUT_FILE}"
     )
 
-with open(INPUT_FILE, "r", newline="", encoding="utf-8-sig") as file:
+with open(
+    INPUT_FILE,
+    "r",
+    newline="",
+    encoding="utf-8-sig"
+) as file:
+
     reader = csv.DictReader(file)
 
     required_columns = {
         "language",
+        "structure",
         "algorithm",
         "rows",
         "cols",
@@ -49,7 +54,10 @@ with open(INPUT_FILE, "r", newline="", encoding="utf-8-sig") as file:
         "valid",
     }
 
-    if not reader.fieldnames or not required_columns.issubset(reader.fieldnames):
+    if (
+        not reader.fieldnames
+        or not required_columns.issubset(reader.fieldnames)
+    ):
         raise ValueError(
             "CSV 파일의 열 구성이 올바르지 않습니다."
         )
@@ -62,6 +70,7 @@ with open(INPUT_FILE, "r", newline="", encoding="utf-8-sig") as file:
 
         data.append({
             "language": row["language"],
+            "structure": row["structure"],
             "algorithm": row["algorithm"],
             "rows": int(row["rows"]),
             "cols": int(row["cols"]),
@@ -86,6 +95,7 @@ print(f"분석 데이터 수: {len(data)}")
 
 languages = ["C", "Python"]
 algorithms = ["Dense", "CSR", "CSC"]
+structures = ["Random", "Banded", "Row", "Block"]
 
 
 def calculate_average(rows, value_key, group_keys):
@@ -113,11 +123,13 @@ def save_plot(filename):
     """
 
     plt.tight_layout()
+
     plt.savefig(
         FIGURE_DIR / filename,
         dpi=300,
         bbox_inches="tight"
     )
+
     plt.close()
 
     print(f"그래프 생성 완료: {filename}")
@@ -127,6 +139,7 @@ def save_plot(filename):
 # 4. 행렬 크기에 따른 실행 시간 비교
 # ==================================================
 
+# 네 가지 구조의 평균 실행 시간
 size_time = calculate_average(
     data,
     "matvec_ms",
@@ -159,7 +172,7 @@ for language in languages:
 
 plt.xlabel("Matrix Size (rows)")
 plt.ylabel("MatVec Time (ms)")
-plt.title("MatVec Time by Matrix Size")
+plt.title("MatVec Time by Matrix Size (Average Across Structures)")
 plt.legend()
 plt.grid(True)
 
@@ -170,6 +183,7 @@ save_plot("time_by_size.png")
 # 5. Density에 따른 실행 시간 비교
 # ==================================================
 
+# 네 가지 구조의 평균 실행 시간
 density_time = calculate_average(
     data,
     "matvec_ms",
@@ -202,7 +216,7 @@ for language in languages:
 
 plt.xlabel("Density")
 plt.ylabel("MatVec Time (ms)")
-plt.title("MatVec Time by Density")
+plt.title("MatVec Time by Density (Average Across Structures)")
 plt.legend()
 plt.grid(True)
 
@@ -213,6 +227,7 @@ save_plot("time_by_density.png")
 # 6. 행렬 크기에 따른 메모리 사용량 비교
 # ==================================================
 
+# 네 가지 구조의 평균 메모리 사용량
 size_memory = calculate_average(
     data,
     "memory_bytes",
@@ -245,7 +260,7 @@ for language in languages:
 
 plt.xlabel("Matrix Size (rows)")
 plt.ylabel("Memory Usage (MB)")
-plt.title("Memory Usage by Matrix Size")
+plt.title("Memory Usage by Matrix Size (Average Across Structures)")
 plt.legend()
 plt.grid(True)
 
@@ -256,6 +271,7 @@ save_plot("memory_by_size.png")
 # 7. Density에 따른 메모리 사용량 비교
 # ==================================================
 
+# 네 가지 구조의 평균 메모리 사용량
 density_memory = calculate_average(
     data,
     "memory_bytes",
@@ -288,7 +304,7 @@ for language in languages:
 
 plt.xlabel("Density")
 plt.ylabel("Memory Usage (MB)")
-plt.title("Memory Usage by Density")
+plt.title("Memory Usage by Density (Average Across Structures)")
 plt.legend()
 plt.grid(True)
 
@@ -299,6 +315,7 @@ save_plot("memory_by_density.png")
 # 8. C와 Python의 실행 시간 비교
 # ==================================================
 
+# 네 가지 구조의 평균 실행 시간
 language_time = calculate_average(
     data,
     "matvec_ms",
@@ -355,10 +372,131 @@ save_plot("language_comparison.png")
 
 
 # ==================================================
-# 9. 최종 결과 출력
+# 9. 구조별 실행 시간 비교
+# ==================================================
+
+for language in languages:
+
+    structure_time = calculate_average(
+        data,
+        "matvec_ms",
+        ["language", "structure", "algorithm", "density"]
+    )
+
+    plt.figure(figsize=(12, 7))
+
+    for structure in structures:
+        for algorithm in algorithms:
+
+            x_values = sorted({
+                key[3]
+                for key in structure_time
+                if (
+                    key[0] == language
+                    and key[1] == structure
+                    and key[2] == algorithm
+                )
+            })
+
+            y_values = [
+                structure_time[
+                    (language, structure, algorithm, density)
+                ]
+                for density in x_values
+            ]
+
+            if x_values:
+                plt.plot(
+                    x_values,
+                    y_values,
+                    marker="o",
+                    label=f"{structure} - {algorithm}"
+                )
+
+    plt.xlabel("Density")
+    plt.ylabel("MatVec Time (ms)")
+    plt.title(
+        f"{language}: MatVec Time by Matrix Structure"
+    )
+
+    plt.legend(
+        bbox_to_anchor=(1.02, 1),
+        loc="upper left"
+    )
+
+    plt.grid(True)
+
+    save_plot(
+        f"structure_time_by_density_{language.lower()}.png"
+    )
+
+
+# ==================================================
+# 10. 구조별 메모리 사용량 비교
+# ==================================================
+
+for language in languages:
+
+    structure_memory = calculate_average(
+        data,
+        "memory_bytes",
+        ["language", "structure", "algorithm", "density"]
+    )
+
+    plt.figure(figsize=(12, 7))
+
+    for structure in structures:
+        for algorithm in algorithms:
+
+            x_values = sorted({
+                key[3]
+                for key in structure_memory
+                if (
+                    key[0] == language
+                    and key[1] == structure
+                    and key[2] == algorithm
+                )
+            })
+
+            y_values = [
+                structure_memory[
+                    (language, structure, algorithm, density)
+                ] / (1024 * 1024)
+                for density in x_values
+            ]
+
+            if x_values:
+                plt.plot(
+                    x_values,
+                    y_values,
+                    marker="o",
+                    label=f"{structure} - {algorithm}"
+                )
+
+    plt.xlabel("Density")
+    plt.ylabel("Memory Usage (MB)")
+    plt.title(
+        f"{language}: Memory Usage by Matrix Structure"
+    )
+
+    plt.legend(
+        bbox_to_anchor=(1.02, 1),
+        loc="upper left"
+    )
+
+    plt.grid(True)
+
+    save_plot(
+        f"structure_memory_by_density_{language.lower()}.png"
+    )
+
+
+# ==================================================
+# 11. 최종 결과 출력
 # ==================================================
 
 print("\n================================")
 print("모든 그래프 생성이 완료되었습니다.")
+print(f"생성된 그래프: 9개")
 print(f"저장 위치: {FIGURE_DIR}")
 print("================================")
