@@ -36,6 +36,16 @@ def run_test(rows, cols, density):
     print(f"Actual density: {nnz / (rows * cols):.2%}")
     print(f"Non-zero elements: {nnz}")
     print("All algorithms produced the same result.")
+    
+    # 성능 측정
+    results = benchmark_matvec(A, x)
+
+    print("\n[Performance Results]")
+
+    for algorithm, result in results.items():
+        print(f"\n{algorithm}")
+        print(f"Execution time: {result['time_ms']:.6f} ms")
+        print(f"Memory usage: {result['memory_bytes']} bytes")
 
 
 def main():
