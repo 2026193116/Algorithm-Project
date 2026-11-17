@@ -12,11 +12,16 @@ from collections import defaultdict
 BASE_DIR = Path(__file__).resolve().parent.parent
 REPORT_DIR = BASE_DIR / "report"
 
-INPUT_FILE = REPORT_DIR / "combined_structure_results.csv"
-OUTPUT_FILE = REPORT_DIR / "structure_validation_summary.txt"
+INPUT_FILE = REPORT_DIR / "combined_density_results.csv"
+OUTPUT_FILE = REPORT_DIR / "density_validation_summary.txt"
 
 EXPECTED_SIZES = [100, 500, 1000, 2000]
-EXPECTED_DENSITIES = [0.01, 0.05, 0.10, 0.30, 0.50]
+
+# Density: 1% ~ 50%, 1% 간격
+EXPECTED_DENSITIES = [
+    i / 100
+    for i in range(1, 51)
+]
 
 EXPECTED_LANGUAGES = ["C", "Python"]
 EXPECTED_STRUCTURES = ["Random", "Banded", "Row", "Block"]
@@ -180,11 +185,6 @@ for language in EXPECTED_LANGUAGES:
 # ==================================================
 # 6. 구조별 데이터 개수 검증
 # ==================================================
-
-structure_counts = defaultdict(int)
-
-for row in data:
-    structure_counts[row["structure"]] += 1
 
 expected_rows_per_structure = (
     len(EXPECTED_SIZES)
@@ -596,7 +596,42 @@ else:
 
 
 # ==================================================
-# 16. 추가 확인이 필요한 사항
+# 16. Density 조건 검증
+# ==================================================
+
+actual_densities = sorted({
+    row["density"]
+    for row in data
+})
+
+if (
+    len(actual_densities) == 50
+    and all(
+        math.isclose(
+            actual,
+            expected,
+            rel_tol=0,
+            abs_tol=DENSITY_TOLERANCE
+        )
+        for actual, expected in zip(
+            actual_densities,
+            EXPECTED_DENSITIES
+        )
+    )
+):
+    add_check(
+        "Density가 1%부터 50%까지 1% 간격으로 모두 존재합니다."
+    )
+else:
+    add_error(
+        f"Density 조건이 올바르지 않습니다. "
+        f"현재 Density 개수: {len(actual_densities)}개, "
+        f"예상: 50개"
+    )
+
+
+# ==================================================
+# 17. 추가 확인이 필요한 사항
 # ==================================================
 
 add_warning(
@@ -616,13 +651,13 @@ add_warning(
 
 
 # ==================================================
-# 17. 검증 결과 출력 및 저장
+# 18. 검증 결과 출력 및 저장
 # ==================================================
 
 summary = []
 
 summary.append("======================================")
-summary.append(" STRUCTURE EXPERIMENT VALIDATION")
+summary.append(" DENSITY EXPERIMENT VALIDATION")
 summary.append("======================================")
 
 summary.append("")
