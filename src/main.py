@@ -2,7 +2,7 @@ from dense import dense_matvec
 from csr import dense_to_csr, csr_matvec
 from csc import dense_to_csc, csc_matvec
 from data_generator import generate_matrix
-
+from benchmark import benchmark_matvec
 
 def run_test(rows, cols, density):
     # 행렬 생성
