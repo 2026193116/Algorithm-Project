@@ -17,7 +17,6 @@ int compare_results(
     int size
 ) {
     for (int i = 0; i < size; i++) {
-
         if (fabs(result[i] - expected[i]) > 1e-9) {
             return 0;
         }
@@ -34,6 +33,8 @@ void write_csv(
     int rows,
     int cols,
     double density,
+    int nnz,
+    double actual_density,
     double conversion_ms,
     double matvec_ms,
     size_t memory_bytes,
@@ -41,11 +42,13 @@ void write_csv(
 ) {
     fprintf(
         fp,
-        "C,%s,%d,%d,%.4f,%.8f,%.8f,%zu,%d\n",
+        "C,%s,%d,%d,%.4f,%d,%.8f,%.8f,%.8f,%zu,%d\n",
         algorithm,
         rows,
         cols,
         density,
+        nnz,
+        actual_density,
         conversion_ms,
         matvec_ms,
         memory_bytes,
@@ -75,6 +78,10 @@ void run_test(
         printf("Matrix generation failed.\n");
         exit(EXIT_FAILURE);
     }
+
+    // 실제 Density 계산
+    double actual_density =
+        (double)nnz / ((double)rows * cols);
 
     // 입력 벡터와 결과 배열 할당
     double *x = malloc(cols * sizeof(double));
@@ -120,11 +127,13 @@ void run_test(
     // CSR 변환 및 계산
     if (!dense_to_csr(A, rows, cols, &csr)) {
         printf("CSR conversion failed.\n");
+
         free_matrix(A, rows);
         free(x);
         free(dense_result);
         free(csr_result);
         free(csc_result);
+
         exit(EXIT_FAILURE);
     }
 
@@ -165,12 +174,7 @@ void run_test(
 
     printf("Matrix size: %d x %d\n", rows, cols);
     printf("Target density: %.2f%%\n", density * 100.0);
-
-    printf(
-        "Actual density: %.2f%%\n",
-        (double)nnz / ((double)rows * cols) * 100.0
-    );
-
+    printf("Actual density: %.2f%%\n", actual_density * 100.0);
     printf("Non-zero elements: %d\n", nnz);
 
     printf("------------------------------------\n");
@@ -266,7 +270,9 @@ void run_test(
 
     // CSV 저장
     write_csv(
-        fp, "Dense", rows, cols, density,
+        fp, "Dense",
+        rows, cols, density,
+        nnz, actual_density,
         0.0,
         result.dense_matvec_ms,
         result.dense_memory_bytes,
@@ -274,7 +280,9 @@ void run_test(
     );
 
     write_csv(
-        fp, "CSR", rows, cols, density,
+        fp, "CSR",
+        rows, cols, density,
+        nnz, actual_density,
         result.csr_conversion_ms,
         result.csr_matvec_ms,
         result.csr_memory_bytes,
@@ -282,7 +290,9 @@ void run_test(
     );
 
     write_csv(
-        fp, "CSC", rows, cols, density,
+        fp, "CSC",
+        rows, cols, density,
+        nnz, actual_density,
         result.csc_conversion_ms,
         result.csc_matvec_ms,
         result.csc_memory_bytes,
@@ -341,6 +351,7 @@ int main(void) {
     fprintf(
         fp,
         "language,algorithm,rows,cols,density,"
+        "nnz,actual_density,"
         "conversion_ms,matvec_ms,memory_bytes,valid\n"
     );
 
