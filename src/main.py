@@ -29,7 +29,10 @@ OUTPUT_PATH = "report/python_results.csv"
 
 
 # 변환 시간 중앙값 측정
-def measure_conversion(conversion_function, repeats=CONVERSION_REPEATS):
+def measure_conversion(
+    conversion_function,
+    repeats=CONVERSION_REPEATS
+):
 
     times = []
 
@@ -53,7 +56,11 @@ def measure_conversion(conversion_function, repeats=CONVERSION_REPEATS):
 
 
 # 두 결과의 정확성 비교
-def compare_results(result, expected, tolerance=1e-9):
+def compare_results(
+    result,
+    expected,
+    tolerance=1e-9
+):
 
     if len(result) != len(expected):
         return False
@@ -72,6 +79,8 @@ def make_csv_row(
     rows,
     cols,
     density,
+    nnz,
+    actual_density,
     conversion_ms,
     matvec_ms,
     memory_bytes,
@@ -84,6 +93,8 @@ def make_csv_row(
         "rows": rows,
         "cols": cols,
         "density": density,
+        "nnz": nnz,
+        "actual_density": actual_density,
         "conversion_ms": conversion_ms,
         "matvec_ms": matvec_ms,
         "memory_bytes": memory_bytes,
@@ -107,7 +118,7 @@ def run_test(rows, cols, density):
         seed=42
     )
 
-    # 실제 비제로 원소 개수
+    # 2. 실제 비제로 원소 개수 계산
     nnz = sum(
         1
         for row in A
@@ -115,21 +126,22 @@ def run_test(rows, cols, density):
         if value != 0
     )
 
+    # 3. 실제 Density 계산
     actual_density = nnz / (rows * cols)
 
     print(f"Actual density: {actual_density * 100:.2f}%")
     print(f"Non-zero elements: {nnz}")
 
-    # 2. 입력 벡터 생성
+    # 4. 입력 벡터 생성
     x = [
         float(j % 5 + 1)
         for j in range(cols)
     ]
 
-    # 3. Dense 계산
+    # 5. Dense 계산
     dense_result = dense_matvec(A, x)
 
-    # 4. CSR 변환 및 계산
+    # 6. CSR 변환 및 계산
     csr_conversion_ms = measure_conversion(
         lambda: dense_to_csr(A)
     )
@@ -143,7 +155,7 @@ def run_test(rows, cols, density):
         x
     )
 
-    # 5. CSC 변환 및 계산
+    # 7. CSC 변환 및 계산
     csc_conversion_ms = measure_conversion(
         lambda: dense_to_csc(A)
     )
@@ -158,7 +170,7 @@ def run_test(rows, cols, density):
         rows
     )
 
-    # 6. 정확성 검증
+    # 8. 정확성 검증
     csr_valid = compare_results(
         csr_result,
         dense_result
@@ -178,14 +190,14 @@ def run_test(rows, cols, density):
     if not csr_valid or not csc_valid:
         raise RuntimeError("Correctness verification failed.")
 
-    # 7. 기존 benchmark.py를 활용한 성능 측정
+    # 9. 기존 benchmark.py를 활용한 성능 측정
     benchmark_results = benchmark_matvec(A, x)
 
     dense_stats = benchmark_results["Dense"]
     csr_stats = benchmark_results["CSR"]
     csc_stats = benchmark_results["CSC"]
 
-    # 8. 화면 출력
+    # 10. 화면 출력
     print("------------------------------------")
 
     print(
@@ -230,13 +242,15 @@ def run_test(rows, cols, density):
         f"{csc_stats['memory_bytes']} bytes"
     )
 
-    # 9. CSV 데이터 생성
+    # 11. CSV 데이터 생성
     rows_to_save = [
 
         make_csv_row(
             "Dense",
             rows,
             cols,
+            density,
+            nnz,
             actual_density,
             0.0,
             dense_stats["time_ms"],
@@ -248,6 +262,8 @@ def run_test(rows, cols, density):
             "CSR",
             rows,
             cols,
+            density,
+            nnz,
             actual_density,
             csr_conversion_ms,
             csr_stats["time_ms"],
@@ -259,6 +275,8 @@ def run_test(rows, cols, density):
             "CSC",
             rows,
             cols,
+            density,
+            nnz,
             actual_density,
             csc_conversion_ms,
             csc_stats["time_ms"],
@@ -310,6 +328,8 @@ def main():
         "rows",
         "cols",
         "density",
+        "nnz",
+        "actual_density",
         "conversion_ms",
         "matvec_ms",
         "memory_bytes",
