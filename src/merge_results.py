@@ -7,17 +7,18 @@ from pathlib import Path
 BASE_DIR = Path(__file__).resolve().parent.parent
 REPORT_DIR = BASE_DIR / "report"
 
-# 입력 파일
-C_FILE = REPORT_DIR / "c_results.csv"
-PYTHON_FILE = REPORT_DIR / "python_results.csv"
+# 구조별 실험 입력 파일
+C_FILE = REPORT_DIR / "c_structure_results.csv"
+PYTHON_FILE = REPORT_DIR / "python_structure_results.csv"
 
-# 출력 파일
-OUTPUT_FILE = REPORT_DIR / "combined_results.csv"
+# 구조별 통합 결과 파일
+OUTPUT_FILE = REPORT_DIR / "combined_structure_results.csv"
 
 
 # 통합 CSV의 열 구성
 FIELDNAMES = [
     "language",
+    "structure",
     "algorithm",
     "rows",
     "cols",
@@ -110,9 +111,10 @@ with open(
     writer.writerows(all_rows)
 
 
-print("CSV 통합 완료!")
+print("Structure CSV 통합 완료!")
 print(f"저장 위치: {OUTPUT_FILE}")
 print(f"총 데이터 행 수: {len(all_rows)}")
+
 
 # 언어별 데이터 개수 출력
 c_count = sum(
@@ -127,3 +129,16 @@ python_count = sum(
 
 print(f"C 데이터 행 수: {c_count}")
 print(f"Python 데이터 행 수: {python_count}")
+
+
+# 구조별 데이터 개수 출력
+print("\n[구조별 데이터 개수]")
+
+for structure in ["Random", "Banded", "Row", "Block"]:
+
+    count = sum(
+        1 for row in all_rows
+        if row["structure"] == structure
+    )
+
+    print(f"{structure}: {count}행")
