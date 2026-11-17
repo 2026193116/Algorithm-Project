@@ -10,20 +10,33 @@ from collections import defaultdict
 # ==================================================
 
 BASE_DIR = Path(__file__).resolve().parent.parent
-
 REPORT_DIR = BASE_DIR / "report"
 
-INPUT_FILE = REPORT_DIR / "combined_results.csv"
-OUTPUT_FILE = REPORT_DIR / "validation_summary.txt"
+INPUT_FILE = REPORT_DIR / "combined_structure_results.csv"
+OUTPUT_FILE = REPORT_DIR / "structure_validation_summary.txt"
 
 EXPECTED_SIZES = [100, 500, 1000, 2000]
 EXPECTED_DENSITIES = [0.01, 0.05, 0.10, 0.30, 0.50]
 
 EXPECTED_LANGUAGES = ["C", "Python"]
+EXPECTED_STRUCTURES = ["Random", "Banded", "Row", "Block"]
 EXPECTED_ALGORITHMS = ["Dense", "CSR", "CSC"]
 
-EXPECTED_ROWS_PER_LANGUAGE = 60
-EXPECTED_TOTAL_ROWS = 120
+EXPECTED_CONDITIONS_PER_LANGUAGE = (
+    len(EXPECTED_SIZES)
+    * len(EXPECTED_DENSITIES)
+    * len(EXPECTED_STRUCTURES)
+)
+
+EXPECTED_ROWS_PER_LANGUAGE = (
+    EXPECTED_CONDITIONS_PER_LANGUAGE
+    * len(EXPECTED_ALGORITHMS)
+)
+
+EXPECTED_TOTAL_ROWS = (
+    EXPECTED_ROWS_PER_LANGUAGE
+    * len(EXPECTED_LANGUAGES)
+)
 
 DENSITY_TOLERANCE = 1e-8
 
@@ -61,6 +74,7 @@ if not INPUT_FILE.exists():
 
 required_columns = [
     "language",
+    "structure",
     "algorithm",
     "rows",
     "cols",
@@ -103,6 +117,7 @@ with open(
         try:
             item = {
                 "language": row["language"],
+                "structure": row["structure"],
                 "algorithm": row["algorithm"],
                 "rows": int(row["rows"]),
                 "cols": int(row["cols"]),
@@ -163,7 +178,46 @@ for language in EXPECTED_LANGUAGES:
 
 
 # ==================================================
-# 6. 실험 조건 및 알고리즘 검증
+# 6. 구조별 데이터 개수 검증
+# ==================================================
+
+structure_counts = defaultdict(int)
+
+for row in data:
+    structure_counts[row["structure"]] += 1
+
+expected_rows_per_structure = (
+    len(EXPECTED_SIZES)
+    * len(EXPECTED_DENSITIES)
+    * len(EXPECTED_ALGORITHMS)
+)
+
+for language in EXPECTED_LANGUAGES:
+
+    for structure in EXPECTED_STRUCTURES:
+
+        count = sum(
+            1
+            for row in data
+            if row["language"] == language
+            and row["structure"] == structure
+        )
+
+        if count == expected_rows_per_structure:
+            add_check(
+                f"{language}의 {structure} 구조 데이터가 "
+                f"{count}개입니다."
+            )
+        else:
+            add_error(
+                f"{language}의 {structure} 구조 데이터가 "
+                f"{count}개입니다. "
+                f"예상: {expected_rows_per_structure}개"
+            )
+
+
+# ==================================================
+# 7. 실험 조건 및 알고리즘 검증
 # ==================================================
 
 groups = defaultdict(list)
@@ -172,6 +226,7 @@ for row in data:
 
     key = (
         row["language"],
+        row["structure"],
         row["rows"],
         row["cols"],
         row["density"]
@@ -180,9 +235,12 @@ for row in data:
     groups[key].append(row["algorithm"])
 
 
-expected_conditions = (
-    len(EXPECTED_SIZES) * len(EXPECTED_DENSITIES)
-)
+expected_condition_set = {
+    (structure, size, size, density)
+    for structure in EXPECTED_STRUCTURES
+    for size in EXPECTED_SIZES
+    for density in EXPECTED_DENSITIES
+}
 
 for language in EXPECTED_LANGUAGES:
 
@@ -193,7 +251,13 @@ for language in EXPECTED_LANGUAGES:
         if key[0] != language:
             continue
 
-        condition = (key[1], key[2], key[3])
+        condition = (
+            key[1],
+            key[2],
+            key[3],
+            key[4]
+        )
+
         actual_conditions.add(condition)
 
         if sorted(algorithms) != sorted(EXPECTED_ALGORITHMS):
@@ -202,31 +266,27 @@ for language in EXPECTED_LANGUAGES:
                 f"올바르지 않습니다: {algorithms}"
             )
 
-    if len(actual_conditions) == expected_conditions:
+    if len(actual_conditions) == EXPECTED_CONDITIONS_PER_LANGUAGE:
         add_check(
-            f"{language}의 실험 조건 {expected_conditions}개가 존재합니다."
+            f"{language}의 실험 조건 "
+            f"{EXPECTED_CONDITIONS_PER_LANGUAGE}개가 존재합니다."
         )
     else:
         add_error(
             f"{language}의 실험 조건이 "
-            f"{len(actual_conditions)}개입니다."
+            f"{len(actual_conditions)}개입니다. "
+            f"예상: {EXPECTED_CONDITIONS_PER_LANGUAGE}개"
         )
-
-    expected_condition_set = {
-        (size, size, density)
-        for size in EXPECTED_SIZES
-        for density in EXPECTED_DENSITIES
-    }
 
     if actual_conditions != expected_condition_set:
         add_error(
-            f"{language}의 행렬 크기 또는 Density 조건이 "
+            f"{language}의 행렬 크기, Density 또는 구조 조건이 "
             f"설정된 실험 조건과 일치하지 않습니다."
         )
 
 
 # ==================================================
-# 7. C와 Python의 실험 조건 비교
+# 8. C와 Python의 실험 조건 비교
 # ==================================================
 
 language_conditions = {}
@@ -234,7 +294,12 @@ language_conditions = {}
 for language in EXPECTED_LANGUAGES:
 
     language_conditions[language] = {
-        (row["rows"], row["cols"], row["density"])
+        (
+            row["structure"],
+            row["rows"],
+            row["cols"],
+            row["density"]
+        )
         for row in data
         if row["language"] == language
     }
@@ -245,7 +310,7 @@ if (
     == language_conditions["Python"]
 ):
     add_check(
-        "C와 Python의 행렬 크기 및 목표 Density 조건이 일치합니다."
+        "C와 Python의 행렬 크기, 목표 Density 및 구조 조건이 일치합니다."
     )
 else:
     add_error(
@@ -254,7 +319,7 @@ else:
 
 
 # ==================================================
-# 8. 정확성 검증 결과 확인
+# 9. 정확성 검증 결과 확인
 # ==================================================
 
 invalid_rows = [
@@ -274,7 +339,7 @@ else:
 
 
 # ==================================================
-# 9. 수치 데이터 검증
+# 10. 수치 데이터 검증
 # ==================================================
 
 invalid_measurements = []
@@ -293,7 +358,10 @@ for row in data:
         continue
 
     if (
-        row["rows"] <= 0
+        row["language"] not in EXPECTED_LANGUAGES
+        or row["structure"] not in EXPECTED_STRUCTURES
+        or row["algorithm"] not in EXPECTED_ALGORITHMS
+        or row["rows"] <= 0
         or row["cols"] <= 0
         or row["density"] < 0
         or row["density"] > 1
@@ -308,6 +376,7 @@ for row in data:
     ):
         invalid_measurements.append(row)
 
+
 if not invalid_measurements:
     add_check(
         "실행 시간, Density, nnz 및 메모리 값이 유효한 범위에 있습니다."
@@ -320,7 +389,7 @@ else:
 
 
 # ==================================================
-# 10. nnz 및 actual_density 관계 검증
+# 11. nnz 및 actual_density 관계 검증
 # ==================================================
 
 invalid_density_rows = []
@@ -355,7 +424,34 @@ else:
 
 
 # ==================================================
-# 11. 알고리즘별 nnz 및 actual_density 일관성 검증
+# 12. 목표 Density에 따른 nnz 검증
+# ==================================================
+
+invalid_target_nnz = []
+
+for row in data:
+
+    expected_nnz = math.floor(
+        row["rows"] * row["cols"] * row["density"] + 0.5
+    )
+
+    if row["nnz"] != expected_nnz:
+        invalid_target_nnz.append(row)
+
+
+if not invalid_target_nnz:
+    add_check(
+        "모든 행의 nnz가 목표 Density에 따른 반올림 계산값과 일치합니다."
+    )
+else:
+    add_error(
+        f"목표 Density에 따른 nnz와 일치하지 않는 행이 "
+        f"{len(invalid_target_nnz)}개 있습니다."
+    )
+
+
+# ==================================================
+# 13. 동일 조건에서 알고리즘 간 nnz 일관성 검증
 # ==================================================
 
 inconsistent_groups = []
@@ -366,6 +462,7 @@ for row in data:
 
     key = (
         row["language"],
+        row["structure"],
         row["rows"],
         row["cols"],
         row["density"]
@@ -398,7 +495,8 @@ for key, rows_in_group in density_groups.items():
 
 if not inconsistent_groups:
     add_check(
-        "동일한 실험 조건에서 Dense, CSR, CSC의 nnz 및 actual_density가 일치합니다."
+        "동일한 구조 및 실험 조건에서 Dense, CSR, CSC의 "
+        "nnz와 actual_density가 일치합니다."
     )
 else:
     add_error(
@@ -408,7 +506,65 @@ else:
 
 
 # ==================================================
-# 12. 중복 데이터 검증
+# 14. C와 Python의 nnz 및 actual_density 비교
+# ==================================================
+
+cross_language_groups = defaultdict(dict)
+
+for row in data:
+
+    key = (
+        row["structure"],
+        row["rows"],
+        row["cols"],
+        row["density"],
+        row["algorithm"]
+    )
+
+    cross_language_groups[key][row["language"]] = (
+        row["nnz"],
+        row["actual_density"]
+    )
+
+
+cross_language_mismatches = []
+
+for key, values in cross_language_groups.items():
+
+    if (
+        "C" not in values
+        or "Python" not in values
+    ):
+        continue
+
+    c_nnz, c_actual_density = values["C"]
+    py_nnz, py_actual_density = values["Python"]
+
+    if (
+        c_nnz != py_nnz
+        or not math.isclose(
+            c_actual_density,
+            py_actual_density,
+            rel_tol=0,
+            abs_tol=DENSITY_TOLERANCE
+        )
+    ):
+        cross_language_mismatches.append(key)
+
+
+if not cross_language_mismatches:
+    add_check(
+        "동일한 실험 조건에서 C와 Python의 nnz 및 actual_density가 일치합니다."
+    )
+else:
+    add_error(
+        f"C와 Python의 nnz 또는 actual_density가 일치하지 않는 "
+        f"조건이 {len(cross_language_mismatches)}개 있습니다."
+    )
+
+
+# ==================================================
+# 15. 중복 데이터 검증
 # ==================================================
 
 unique_keys = set()
@@ -418,6 +574,7 @@ for row in data:
 
     key = (
         row["language"],
+        row["structure"],
         row["algorithm"],
         row["rows"],
         row["cols"],
@@ -439,17 +596,17 @@ else:
 
 
 # ==================================================
-# 13. 추가 검증이 필요한 사항
+# 16. 추가 확인이 필요한 사항
 # ==================================================
 
 add_warning(
     "C와 Python은 서로 다른 난수 생성 방식을 사용하므로 "
-    "동일한 목표 Density에서도 nnz가 다를 수 있습니다."
+    "동일한 nnz라도 원소의 위치와 값은 다를 수 있습니다."
 )
 
 add_warning(
-    "현재 CSV만으로 C와 Python이 동일한 입력 행렬을 "
-    "사용했는지는 확인할 수 없습니다."
+    "현재 CSV에는 입력 행렬 자체가 저장되어 있지 않으므로 "
+    "C와 Python이 동일한 원소 위치와 값을 사용했는지는 확인할 수 없습니다."
 )
 
 add_warning(
@@ -459,13 +616,13 @@ add_warning(
 
 
 # ==================================================
-# 14. 검증 결과 출력 및 저장
+# 17. 검증 결과 출력 및 저장
 # ==================================================
 
 summary = []
 
 summary.append("======================================")
-summary.append("     EXPERIMENT DATA VALIDATION")
+summary.append(" STRUCTURE EXPERIMENT VALIDATION")
 summary.append("======================================")
 
 summary.append("")
