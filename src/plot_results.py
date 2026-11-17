@@ -41,6 +41,8 @@ with open(INPUT_FILE, "r", newline="", encoding="utf-8-sig") as file:
         "rows",
         "cols",
         "density",
+        "nnz",
+        "actual_density",
         "conversion_ms",
         "matvec_ms",
         "memory_bytes",
@@ -48,7 +50,9 @@ with open(INPUT_FILE, "r", newline="", encoding="utf-8-sig") as file:
     }
 
     if not reader.fieldnames or not required_columns.issubset(reader.fieldnames):
-        raise ValueError("CSV 파일의 열 구성이 올바르지 않습니다.")
+        raise ValueError(
+            "CSV 파일의 열 구성이 올바르지 않습니다."
+        )
 
     for row in reader:
 
@@ -60,7 +64,10 @@ with open(INPUT_FILE, "r", newline="", encoding="utf-8-sig") as file:
             "language": row["language"],
             "algorithm": row["algorithm"],
             "rows": int(row["rows"]),
+            "cols": int(row["cols"]),
             "density": float(row["density"]),
+            "nnz": int(row["nnz"]),
+            "actual_density": float(row["actual_density"]),
             "conversion_ms": float(row["conversion_ms"]),
             "matvec_ms": float(row["matvec_ms"]),
             "memory_bytes": int(row["memory_bytes"]),
