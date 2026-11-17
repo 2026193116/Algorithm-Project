@@ -1,3 +1,4 @@
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
@@ -6,6 +7,7 @@
 #include "csr.h"
 #include "csc.h"
 #include "data_generator.h"
+#include "benchmark.h"
 
 
 // 두 결과가 같은지 확인
@@ -25,12 +27,43 @@ int compare_results(
 }
 
 
-// 하나의 실험 조건 실행
-void run_test(int rows, int cols, double density) {
+// CSV에 실험 결과 기록
+void write_csv(
+    FILE *fp,
+    const char *algorithm,
+    int rows,
+    int cols,
+    double density,
+    double conversion_ms,
+    double matvec_ms,
+    size_t memory_bytes,
+    int valid
+) {
+    fprintf(
+        fp,
+        "C,%s,%d,%d,%.4f,%.8f,%.8f,%zu,%d\n",
+        algorithm,
+        rows,
+        cols,
+        density,
+        conversion_ms,
+        matvec_ms,
+        memory_bytes,
+        valid
+    );
+}
 
+
+// 하나의 실험 조건 실행
+void run_test(
+    FILE *fp,
+    int rows,
+    int cols,
+    double density
+) {
     int nnz = 0;
 
-    // Dense 행렬 생성
+    // 행렬 생성
     double **A = generate_matrix(
         rows,
         cols,
@@ -43,7 +76,7 @@ void run_test(int rows, int cols, double density) {
         exit(EXIT_FAILURE);
     }
 
-    // 입력 벡터 및 결과 배열 할당
+    // 입력 벡터와 결과 배열 할당
     double *x = malloc(cols * sizeof(double));
 
     double *dense_result = malloc(rows * sizeof(double));
@@ -75,7 +108,7 @@ void run_test(int rows, int cols, double density) {
     CSRMatrix csr = {0};
     CSCMatrix csc = {0};
 
-    // Dense 행렬-벡터 곱셈
+    // Dense 계산
     dense_matvec(
         A,
         x,
@@ -84,49 +117,36 @@ void run_test(int rows, int cols, double density) {
         cols
     );
 
-    // Dense -> CSR 변환
+    // CSR 변환 및 계산
     if (!dense_to_csr(A, rows, cols, &csr)) {
         printf("CSR conversion failed.\n");
-
+        free_matrix(A, rows);
         free(x);
         free(dense_result);
         free(csr_result);
         free(csc_result);
-        free_matrix(A, rows);
-
         exit(EXIT_FAILURE);
     }
 
-    // Dense -> CSC 변환
+    csr_matvec(&csr, x, csr_result);
+
+    // CSC 변환 및 계산
     if (!dense_to_csc(A, rows, cols, &csc)) {
         printf("CSC conversion failed.\n");
 
         free_csr(&csr);
-
+        free_matrix(A, rows);
         free(x);
         free(dense_result);
         free(csr_result);
         free(csc_result);
-        free_matrix(A, rows);
 
         exit(EXIT_FAILURE);
     }
 
-    // CSR 행렬-벡터 곱셈
-    csr_matvec(
-        &csr,
-        x,
-        csr_result
-    );
+    csc_matvec(&csc, x, csc_result);
 
-    // CSC 행렬-벡터 곱셈
-    csc_matvec(
-        &csc,
-        x,
-        csc_result
-    );
-
-    // Dense 결과를 기준으로 정확성 검증
+    // 정확성 검증
     int csr_valid = compare_results(
         csr_result,
         dense_result,
@@ -139,28 +159,135 @@ void run_test(int rows, int cols, double density) {
         rows
     );
 
-    // 실험 결과 출력
+    int all_valid = csr_valid && csc_valid;
+
     printf("\n====================================\n");
 
     printf("Matrix size: %d x %d\n", rows, cols);
+    printf("Target density: %.2f%%\n", density * 100.0);
 
-    printf("Target density: %.2f%%\n",
-           density * 100.0);
-
-    printf("Actual density: %.2f%%\n",
-           (double)nnz / ((double)rows * cols) * 100.0);
+    printf(
+        "Actual density: %.2f%%\n",
+        (double)nnz / ((double)rows * cols) * 100.0
+    );
 
     printf("Non-zero elements: %d\n", nnz);
 
     printf("------------------------------------\n");
 
     printf("Dense correctness: PASS\n");
+    printf("CSR correctness: %s\n", csr_valid ? "PASS" : "FAIL");
+    printf("CSC correctness: %s\n", csc_valid ? "PASS" : "FAIL");
 
-    printf("CSR correctness: %s\n",
-           csr_valid ? "PASS" : "FAIL");
+    // 정확성 검증이 실패하면 측정하지 않음
+    if (!all_valid) {
+        free_csr(&csr);
+        free_csc(&csc);
+        free_matrix(A, rows);
 
-    printf("CSC correctness: %s\n",
-           csc_valid ? "PASS" : "FAIL");
+        free(x);
+        free(dense_result);
+        free(csr_result);
+        free(csc_result);
+
+        exit(EXIT_FAILURE);
+    }
+
+    // 벤치마크 결과 구조체
+    BenchmarkResult result = {0};
+
+    // 성능 측정
+    if (!benchmark_matvec(
+        A,
+        x,
+        rows,
+        cols,
+        nnz,
+        &result
+    )) {
+        printf("Benchmark failed.\n");
+
+        free_csr(&csr);
+        free_csc(&csc);
+        free_matrix(A, rows);
+
+        free(x);
+        free(dense_result);
+        free(csr_result);
+        free(csc_result);
+
+        exit(EXIT_FAILURE);
+    }
+
+    // 화면에 성능 측정 결과 출력
+    printf("------------------------------------\n");
+
+    printf(
+        "Dense matvec: %.8f ms\n",
+        result.dense_matvec_ms
+    );
+
+    printf(
+        "CSR conversion: %.8f ms\n",
+        result.csr_conversion_ms
+    );
+
+    printf(
+        "CSR matvec: %.8f ms\n",
+        result.csr_matvec_ms
+    );
+
+    printf(
+        "CSC conversion: %.8f ms\n",
+        result.csc_conversion_ms
+    );
+
+    printf(
+        "CSC matvec: %.8f ms\n",
+        result.csc_matvec_ms
+    );
+
+    printf("------------------------------------\n");
+
+    printf(
+        "Dense memory: %zu bytes\n",
+        result.dense_memory_bytes
+    );
+
+    printf(
+        "CSR memory: %zu bytes\n",
+        result.csr_memory_bytes
+    );
+
+    printf(
+        "CSC memory: %zu bytes\n",
+        result.csc_memory_bytes
+    );
+
+    // CSV 저장
+    write_csv(
+        fp, "Dense", rows, cols, density,
+        0.0,
+        result.dense_matvec_ms,
+        result.dense_memory_bytes,
+        1
+    );
+
+    write_csv(
+        fp, "CSR", rows, cols, density,
+        result.csr_conversion_ms,
+        result.csr_matvec_ms,
+        result.csr_memory_bytes,
+        csr_valid
+    );
+
+    write_csv(
+        fp, "CSC", rows, cols, density,
+        result.csc_conversion_ms,
+        result.csc_matvec_ms,
+        result.csc_memory_bytes,
+        csc_valid
+    );
 
     // 메모리 해제
     free_csr(&csr);
@@ -172,49 +299,70 @@ void run_test(int rows, int cols, double density) {
     free(csc_result);
 
     free_matrix(A, rows);
-
-    // 정확성 검증 실패 시 프로그램 종료
-    if (!csr_valid || !csc_valid) {
-        exit(EXIT_FAILURE);
-    }
 }
 
 
 int main(void) {
 
-    // 난수 시드 설정
     srand(42);
 
-    // 실험 조건
-    int test_cases[][2] = {
-        {100, 100},
-        {500, 500},
-        {1000, 1000},
-        {2000, 2000}
+    // 행렬 크기
+    int matrix_sizes[] = {
+        100,
+        500,
+        1000,
+        2000
     };
 
+    // Density
     double densities[] = {
-        0.05,
         0.01,
+        0.05,
         0.10,
-        0.05
+        0.30,
+        0.50
     };
 
-    int num_tests =
-        sizeof(test_cases) / sizeof(test_cases[0]);
+    int size_count =
+        sizeof(matrix_sizes) / sizeof(matrix_sizes[0]);
 
-    // 모든 실험 실행
-    for (int i = 0; i < num_tests; i++) {
+    int density_count =
+        sizeof(densities) / sizeof(densities[0]);
 
-        run_test(
-            test_cases[i][0],
-            test_cases[i][1],
-            densities[i]
-        );
+    // CSV 파일 생성
+    FILE *fp = fopen("report/c_results.csv", "w");
+
+    if (fp == NULL) {
+        printf("CSV file creation failed.\n");
+        return EXIT_FAILURE;
     }
 
-    printf("\n====================================\n");
-    printf("All correctness tests passed!\n");
+    // CSV 헤더
+    fprintf(
+        fp,
+        "language,algorithm,rows,cols,density,"
+        "conversion_ms,matvec_ms,memory_bytes,valid\n"
+    );
 
-    return 0;
+    // 전체 실험 실행
+    for (int i = 0; i < size_count; i++) {
+
+        for (int j = 0; j < density_count; j++) {
+
+            run_test(
+                fp,
+                matrix_sizes[i],
+                matrix_sizes[i],
+                densities[j]
+            );
+        }
+    }
+
+    fclose(fp);
+
+    printf("\n====================================\n");
+    printf("All benchmark tests completed!\n");
+    printf("Results saved to report/c_results.csv\n");
+
+    return EXIT_SUCCESS;
 }
