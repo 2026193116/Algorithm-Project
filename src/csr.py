@@ -1,6 +1,13 @@
 def dense_to_csr(A):
     m = len(A)
+
+    if m == 0 or len(A[0]) == 0:
+        raise ValueError("Matrix must not be empty.")
+
     n = len(A[0])
+
+    if any(len(row) != n for row in A):
+        raise ValueError("Matrix must be rectangular.")
 
     data = []
     indices = []
@@ -19,6 +26,7 @@ def dense_to_csr(A):
 
 def csr_matvec(data, indices, indptr, x):
     m = len(indptr) - 1
+
     y = [0.0] * m
 
     for i in range(m):
