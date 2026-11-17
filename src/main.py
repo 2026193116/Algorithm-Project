@@ -1,18 +1,20 @@
 from dense import dense_matvec
 from csr import dense_to_csr, csr_matvec
 from csc import dense_to_csc, csc_matvec
+from data_generator import generate_matrix
 
 
-def main():
-    A = [
-        [1, 0, 2],
-        [0, 3, 0],
-        [4, 0, 5]
-    ]
+def run_test(rows, cols, density):
+    # 행렬 생성
+    A = generate_matrix(rows, cols, density)
 
-    x = [1, 2, 3]
+    # 벡터 생성
+    x = [1] * cols
 
-    expected = [7, 6, 19]
+    # 실제 0이 아닌 원소의 개수 확인
+    nnz = sum(
+        1 for row in A for value in row if value != 0
+    )
 
     # Dense
     dense_result = dense_matvec(A, x)
@@ -23,17 +25,31 @@ def main():
 
     # CSC
     data, indices, indptr = dense_to_csc(A)
-    csc_result = csc_matvec(data, indices, indptr, x, len(A))
+    csc_result = csc_matvec(data, indices, indptr, x, rows)
 
-    print("Dense:", dense_result)
-    print("CSR:  ", csr_result)
-    print("CSC:  ", csc_result)
+    # 결과 검증
+    assert dense_result == csr_result
+    assert dense_result == csc_result
 
-    assert dense_result == expected
-    assert csr_result == expected
-    assert csc_result == expected
+    print(f"\nMatrix size: {rows} x {cols}")
+    print(f"Target density: {density:.0%}")
+    print(f"Actual density: {nnz / (rows * cols):.2%}")
+    print(f"Non-zero elements: {nnz}")
+    print("All algorithms produced the same result.")
 
-    print("All correctness tests passed!")
+
+def main():
+    test_cases = [
+        (3, 3, 0.5),
+        (5, 8, 0.2),
+        (100, 100, 0.05),
+        (500, 500, 0.01),
+    ]
+
+    for rows, cols, density in test_cases:
+        run_test(rows, cols, density)
+
+    print("\nAll correctness tests passed!")
 
 
 if __name__ == "__main__":
