@@ -252,13 +252,13 @@ double **generate_matrix_by_structure(
         }
 
         int block_cols =
-            (target_nnz + block_rows - 1) / block_rows;
+            (target_nnz - 1) / block_rows + 1;
 
         if (block_cols > cols) {
             block_cols = cols;
 
             block_rows =
-                (target_nnz + block_cols - 1) / block_cols;
+                (target_nnz - 1) / block_cols + 1;
         }
 
         candidate_count =
