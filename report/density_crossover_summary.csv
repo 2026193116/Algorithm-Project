@@ -1,0 +1,193 @@
+﻿language,structure,rows,cols,algorithm,metric,status,lower_density,upper_density,estimated_density
+C,Banded,100,100,CSR,matvec_ms,관측 범위 내 역전 없음,,,
+C,Banded,100,100,CSR,memory_bytes,관측 범위 내 역전 없음,,,
+C,Banded,100,100,CSR,total_ms,처음부터 Dense가 유리,,,
+C,Banded,100,100,CSC,matvec_ms,관측 범위 내 역전 없음,,,
+C,Banded,100,100,CSC,memory_bytes,관측 범위 내 역전 없음,,,
+C,Banded,100,100,CSC,total_ms,처음부터 Dense가 유리,,,
+C,Banded,500,500,CSR,matvec_ms,관측 범위 내 역전 없음,,,
+C,Banded,500,500,CSR,memory_bytes,관측 범위 내 역전 없음,,,
+C,Banded,500,500,CSR,total_ms,처음부터 Dense가 유리,,,
+C,Banded,500,500,CSC,matvec_ms,관측 범위 내 역전 없음,,,
+C,Banded,500,500,CSC,memory_bytes,관측 범위 내 역전 없음,,,
+C,Banded,500,500,CSC,total_ms,처음부터 Dense가 유리,,,
+C,Banded,1000,1000,CSR,matvec_ms,관측 범위 내 역전 없음,,,
+C,Banded,1000,1000,CSR,memory_bytes,관측 범위 내 역전 없음,,,
+C,Banded,1000,1000,CSR,total_ms,처음부터 Dense가 유리,,,
+C,Banded,1000,1000,CSC,matvec_ms,관측 범위 내 역전 없음,,,
+C,Banded,1000,1000,CSC,memory_bytes,관측 범위 내 역전 없음,,,
+C,Banded,1000,1000,CSC,total_ms,처음부터 Dense가 유리,,,
+C,Banded,2000,2000,CSR,matvec_ms,관측 범위 내 역전 없음,,,
+C,Banded,2000,2000,CSR,memory_bytes,관측 범위 내 역전 없음,,,
+C,Banded,2000,2000,CSR,total_ms,처음부터 Dense가 유리,,,
+C,Banded,2000,2000,CSC,matvec_ms,관측 범위 내 역전 없음,,,
+C,Banded,2000,2000,CSC,memory_bytes,관측 범위 내 역전 없음,,,
+C,Banded,2000,2000,CSC,total_ms,처음부터 Dense가 유리,,,
+C,Block,100,100,CSR,matvec_ms,관측 범위 내 역전 없음,,,
+C,Block,100,100,CSR,memory_bytes,관측 범위 내 역전 없음,,,
+C,Block,100,100,CSR,total_ms,처음부터 Dense가 유리,,,
+C,Block,100,100,CSC,matvec_ms,관측 범위 내 역전 없음,,,
+C,Block,100,100,CSC,memory_bytes,관측 범위 내 역전 없음,,,
+C,Block,100,100,CSC,total_ms,처음부터 Dense가 유리,,,
+C,Block,500,500,CSR,matvec_ms,관측 범위 내 역전 없음,,,
+C,Block,500,500,CSR,memory_bytes,관측 범위 내 역전 없음,,,
+C,Block,500,500,CSR,total_ms,처음부터 Dense가 유리,,,
+C,Block,500,500,CSC,matvec_ms,관측 범위 내 역전 없음,,,
+C,Block,500,500,CSC,memory_bytes,관측 범위 내 역전 없음,,,
+C,Block,500,500,CSC,total_ms,처음부터 Dense가 유리,,,
+C,Block,1000,1000,CSR,matvec_ms,관측 범위 내 역전 없음,,,
+C,Block,1000,1000,CSR,memory_bytes,관측 범위 내 역전 없음,,,
+C,Block,1000,1000,CSR,total_ms,처음부터 Dense가 유리,,,
+C,Block,1000,1000,CSC,matvec_ms,관측 범위 내 역전 없음,,,
+C,Block,1000,1000,CSC,memory_bytes,관측 범위 내 역전 없음,,,
+C,Block,1000,1000,CSC,total_ms,처음부터 Dense가 유리,,,
+C,Block,2000,2000,CSR,matvec_ms,관측 범위 내 역전 없음,,,
+C,Block,2000,2000,CSR,memory_bytes,관측 범위 내 역전 없음,,,
+C,Block,2000,2000,CSR,total_ms,처음부터 Dense가 유리,,,
+C,Block,2000,2000,CSC,matvec_ms,관측 범위 내 역전 없음,,,
+C,Block,2000,2000,CSC,memory_bytes,관측 범위 내 역전 없음,,,
+C,Block,2000,2000,CSC,total_ms,처음부터 Dense가 유리,,,
+C,Random,100,100,CSR,matvec_ms,관측 범위 내 역전 없음,,,
+C,Random,100,100,CSR,memory_bytes,관측 범위 내 역전 없음,,,
+C,Random,100,100,CSR,total_ms,처음부터 Dense가 유리,,,
+C,Random,100,100,CSC,matvec_ms,관측 범위 내 역전 없음,,,
+C,Random,100,100,CSC,memory_bytes,관측 범위 내 역전 없음,,,
+C,Random,100,100,CSC,total_ms,처음부터 Dense가 유리,,,
+C,Random,500,500,CSR,matvec_ms,관측 범위 내 역전 없음,,,
+C,Random,500,500,CSR,memory_bytes,관측 범위 내 역전 없음,,,
+C,Random,500,500,CSR,total_ms,처음부터 Dense가 유리,,,
+C,Random,500,500,CSC,matvec_ms,관측 범위 내 역전 없음,,,
+C,Random,500,500,CSC,memory_bytes,관측 범위 내 역전 없음,,,
+C,Random,500,500,CSC,total_ms,처음부터 Dense가 유리,,,
+C,Random,1000,1000,CSR,matvec_ms,관측 범위 내 역전 없음,,,
+C,Random,1000,1000,CSR,memory_bytes,관측 범위 내 역전 없음,,,
+C,Random,1000,1000,CSR,total_ms,처음부터 Dense가 유리,,,
+C,Random,1000,1000,CSC,matvec_ms,관측 범위 내 역전 없음,,,
+C,Random,1000,1000,CSC,memory_bytes,관측 범위 내 역전 없음,,,
+C,Random,1000,1000,CSC,total_ms,처음부터 Dense가 유리,,,
+C,Random,2000,2000,CSR,matvec_ms,관측 범위 내 역전 없음,,,
+C,Random,2000,2000,CSR,memory_bytes,관측 범위 내 역전 없음,,,
+C,Random,2000,2000,CSR,total_ms,처음부터 Dense가 유리,,,
+C,Random,2000,2000,CSC,matvec_ms,관측 범위 내 역전 없음,,,
+C,Random,2000,2000,CSC,memory_bytes,관측 범위 내 역전 없음,,,
+C,Random,2000,2000,CSC,total_ms,처음부터 Dense가 유리,,,
+C,Row,100,100,CSR,matvec_ms,관측 범위 내 역전 없음,,,
+C,Row,100,100,CSR,memory_bytes,관측 범위 내 역전 없음,,,
+C,Row,100,100,CSR,total_ms,처음부터 Dense가 유리,,,
+C,Row,100,100,CSC,matvec_ms,관측 범위 내 역전 없음,,,
+C,Row,100,100,CSC,memory_bytes,관측 범위 내 역전 없음,,,
+C,Row,100,100,CSC,total_ms,처음부터 Dense가 유리,,,
+C,Row,500,500,CSR,matvec_ms,관측 범위 내 역전 없음,,,
+C,Row,500,500,CSR,memory_bytes,관측 범위 내 역전 없음,,,
+C,Row,500,500,CSR,total_ms,처음부터 Dense가 유리,,,
+C,Row,500,500,CSC,matvec_ms,관측 범위 내 역전 없음,,,
+C,Row,500,500,CSC,memory_bytes,관측 범위 내 역전 없음,,,
+C,Row,500,500,CSC,total_ms,처음부터 Dense가 유리,,,
+C,Row,1000,1000,CSR,matvec_ms,관측 범위 내 역전 없음,,,
+C,Row,1000,1000,CSR,memory_bytes,관측 범위 내 역전 없음,,,
+C,Row,1000,1000,CSR,total_ms,처음부터 Dense가 유리,,,
+C,Row,1000,1000,CSC,matvec_ms,관측 범위 내 역전 없음,,,
+C,Row,1000,1000,CSC,memory_bytes,관측 범위 내 역전 없음,,,
+C,Row,1000,1000,CSC,total_ms,처음부터 Dense가 유리,,,
+C,Row,2000,2000,CSR,matvec_ms,관측 범위 내 역전 없음,,,
+C,Row,2000,2000,CSR,memory_bytes,관측 범위 내 역전 없음,,,
+C,Row,2000,2000,CSR,total_ms,처음부터 Dense가 유리,,,
+C,Row,2000,2000,CSC,matvec_ms,관측 범위 내 역전 없음,,,
+C,Row,2000,2000,CSC,memory_bytes,관측 범위 내 역전 없음,,,
+C,Row,2000,2000,CSC,total_ms,처음부터 Dense가 유리,,,
+Python,Banded,100,100,CSR,matvec_ms,관측 범위 내 역전 없음,,,
+Python,Banded,100,100,CSR,memory_bytes,관측 범위 내 역전 없음,,,
+Python,Banded,100,100,CSR,total_ms,역전 발생,0.06,0.07,0.06359499316888766
+Python,Banded,100,100,CSC,matvec_ms,관측 범위 내 역전 없음,,,
+Python,Banded,100,100,CSC,memory_bytes,관측 범위 내 역전 없음,,,
+Python,Banded,100,100,CSC,total_ms,역전 발생,0.25,0.26,0.25930586680707757
+Python,Banded,500,500,CSR,matvec_ms,관측 범위 내 역전 없음,,,
+Python,Banded,500,500,CSR,memory_bytes,역전 발생,0.28,0.29,0.28070422857142857
+Python,Banded,500,500,CSR,total_ms,역전 발생,0.33,0.34,0.33674632548655736
+Python,Banded,500,500,CSC,matvec_ms,관측 범위 내 역전 없음,,,
+Python,Banded,500,500,CSC,memory_bytes,역전 발생,0.28,0.29,0.2807126882701963
+Python,Banded,500,500,CSC,total_ms,역전 발생,0.09,0.1,0.09942461653340554
+Python,Banded,1000,1000,CSR,matvec_ms,관측 범위 내 역전 없음,,,
+Python,Banded,1000,1000,CSR,memory_bytes,역전 발생,0.22,0.23,0.22735914971726323
+Python,Banded,1000,1000,CSR,total_ms,역전 발생,0.28,0.29,0.2884333418508361
+Python,Banded,1000,1000,CSC,matvec_ms,관측 범위 내 역전 없음,,,
+Python,Banded,1000,1000,CSC,memory_bytes,역전 발생,0.22,0.23,0.2273580546752362
+Python,Banded,1000,1000,CSC,total_ms,역전 발생,0.19,0.2,0.19700060710358813
+Python,Banded,2000,2000,CSR,matvec_ms,관측 범위 내 역전 없음,,,
+Python,Banded,2000,2000,CSR,memory_bytes,역전 발생,0.18,0.19,0.18996513063632198
+Python,Banded,2000,2000,CSR,total_ms,역전 발생,0.27,0.28,0.27828603410948916
+Python,Banded,2000,2000,CSC,matvec_ms,관측 범위 내 역전 없음,,,
+Python,Banded,2000,2000,CSC,memory_bytes,역전 발생,0.18,0.19,0.18996501843320918
+Python,Banded,2000,2000,CSC,total_ms,역전 발생,0.19,0.2,0.190172528424967
+Python,Block,100,100,CSR,matvec_ms,관측 범위 내 역전 없음,,,
+Python,Block,100,100,CSR,memory_bytes,관측 범위 내 역전 없음,,,
+Python,Block,100,100,CSR,total_ms,역전 발생,0.32,0.33,0.3276620074940635
+Python,Block,100,100,CSC,matvec_ms,관측 범위 내 역전 없음,,,
+Python,Block,100,100,CSC,memory_bytes,관측 범위 내 역전 없음,,,
+Python,Block,100,100,CSC,total_ms,역전 발생,0.08,0.09,0.08986640536335827
+Python,Block,500,500,CSR,matvec_ms,관측 범위 내 역전 없음,,,
+Python,Block,500,500,CSR,memory_bytes,역전 발생,0.39,0.4,0.3908782280684786
+Python,Block,500,500,CSR,total_ms,역전 발생,0.34,0.35,0.3415690288589376
+Python,Block,500,500,CSC,matvec_ms,관측 범위 내 역전 없음,,,
+Python,Block,500,500,CSC,memory_bytes,역전 발생,0.38,0.39,0.38916584790725095
+Python,Block,500,500,CSC,total_ms,역전 발생,0.23,0.24,0.23310304941754553
+Python,Block,1000,1000,CSR,matvec_ms,관측 범위 내 역전 없음,,,
+Python,Block,1000,1000,CSR,memory_bytes,역전 발생,0.28,0.29,0.28207353569901666
+Python,Block,1000,1000,CSR,total_ms,역전 발생,0.3,0.31,0.3087222563279483
+Python,Block,1000,1000,CSC,matvec_ms,관측 범위 내 역전 없음,,,
+Python,Block,1000,1000,CSC,memory_bytes,역전 발생,0.28,0.29,0.28200328907296873
+Python,Block,1000,1000,CSC,total_ms,역전 발생,0.26,0.27,0.2628435791210579
+Python,Block,2000,2000,CSR,matvec_ms,관측 범위 내 역전 없음,,,
+Python,Block,2000,2000,CSR,memory_bytes,역전 발생,0.21,0.22,0.21371562650943554
+Python,Block,2000,2000,CSR,total_ms,역전 발생,0.29,0.3,0.29522686005333354
+Python,Block,2000,2000,CSC,matvec_ms,관측 범위 내 역전 없음,,,
+Python,Block,2000,2000,CSC,memory_bytes,역전 발생,0.21,0.22,0.2136844216367764
+Python,Block,2000,2000,CSC,total_ms,역전 발생,0.21,0.22,0.21699711612142347
+Python,Random,100,100,CSR,matvec_ms,관측 범위 내 역전 없음,,,
+Python,Random,100,100,CSR,memory_bytes,관측 범위 내 역전 없음,,,
+Python,Random,100,100,CSR,total_ms,역전 발생,0.25,0.26,0.2551991955141827
+Python,Random,100,100,CSC,matvec_ms,관측 범위 내 역전 없음,,,
+Python,Random,100,100,CSC,memory_bytes,관측 범위 내 역전 없음,,,
+Python,Random,100,100,CSC,total_ms,역전 발생,0.15,0.16,0.15865402946564133
+Python,Random,500,500,CSR,matvec_ms,관측 범위 내 역전 없음,,,
+Python,Random,500,500,CSR,memory_bytes,역전 발생,0.28,0.29,0.280844644860027
+Python,Random,500,500,CSR,total_ms,역전 발생,0.25,0.26,0.2597784408236982
+Python,Random,500,500,CSC,matvec_ms,관측 범위 내 역전 없음,,,
+Python,Random,500,500,CSC,memory_bytes,역전 발생,0.28,0.29,0.280471926538444
+Python,Random,500,500,CSC,total_ms,역전 발생,0.02,0.03,0.02877675514079734
+Python,Random,1000,1000,CSR,matvec_ms,관측 범위 내 역전 없음,,,
+Python,Random,1000,1000,CSR,memory_bytes,역전 발생,0.22,0.23,0.2288737684951825
+Python,Random,1000,1000,CSR,total_ms,역전 발생,0.24,0.25,0.2498434545768065
+Python,Random,1000,1000,CSC,matvec_ms,관측 범위 내 역전 없음,,,
+Python,Random,1000,1000,CSC,memory_bytes,역전 발생,0.22,0.23,0.22893024571370113
+Python,Random,1000,1000,CSC,total_ms,역전 발생,0.18,0.19,0.18365925059665264
+Python,Random,2000,2000,CSR,matvec_ms,관측 범위 내 역전 없음,,,
+Python,Random,2000,2000,CSR,memory_bytes,역전 발생,0.19,0.2,0.19414537841739637
+Python,Random,2000,2000,CSR,total_ms,역전 발생,0.22,0.23,0.2295154197680906
+Python,Random,2000,2000,CSC,matvec_ms,관측 범위 내 역전 없음,,,
+Python,Random,2000,2000,CSC,memory_bytes,역전 발생,0.19,0.2,0.19419504656687464
+Python,Random,2000,2000,CSC,total_ms,역전 발생,0.16,0.17,0.1620410619399275
+Python,Row,100,100,CSR,matvec_ms,관측 범위 내 역전 없음,,,
+Python,Row,100,100,CSR,memory_bytes,관측 범위 내 역전 없음,,,
+Python,Row,100,100,CSR,total_ms,역전 발생,0.18,0.19,0.18267968330289278
+Python,Row,100,100,CSC,matvec_ms,관측 범위 내 역전 없음,,,
+Python,Row,100,100,CSC,memory_bytes,관측 범위 내 역전 없음,,,
+Python,Row,100,100,CSC,total_ms,역전 발생,0.34,0.35,0.348757205270769
+Python,Row,500,500,CSR,matvec_ms,관측 범위 내 역전 없음,,,
+Python,Row,500,500,CSR,memory_bytes,역전 발생,0.28,0.29,0.28054358528152407
+Python,Row,500,500,CSR,total_ms,역전 발생,0.31,0.32,0.31648738712308055
+Python,Row,500,500,CSC,matvec_ms,관측 범위 내 역전 없음,,,
+Python,Row,500,500,CSC,memory_bytes,관측 범위 내 역전 없음,,,
+Python,Row,500,500,CSC,total_ms,역전 발생,0.3,0.31,0.30659820910000674
+Python,Row,1000,1000,CSR,matvec_ms,관측 범위 내 역전 없음,,,
+Python,Row,1000,1000,CSR,memory_bytes,역전 발생,0.22,0.23,0.22887328688830333
+Python,Row,1000,1000,CSR,total_ms,역전 발생,0.29,0.3,0.2951227233695789
+Python,Row,1000,1000,CSC,matvec_ms,관측 범위 내 역전 없음,,,
+Python,Row,1000,1000,CSC,memory_bytes,역전 발생,0.36,0.37,0.36082508381301787
+Python,Row,1000,1000,CSC,total_ms,역전 발생,0.3,0.31,0.304922839397834
+Python,Row,2000,2000,CSR,matvec_ms,관측 범위 내 역전 없음,,,
+Python,Row,2000,2000,CSR,memory_bytes,역전 발생,0.19,0.2,0.19418564052126874
+Python,Row,2000,2000,CSR,total_ms,역전 발생,0.28,0.29,0.2885611822146174
+Python,Row,2000,2000,CSC,matvec_ms,관측 범위 내 역전 없음,,,
+Python,Row,2000,2000,CSC,memory_bytes,역전 발생,0.26,0.27,0.2621024819816252
+Python,Row,2000,2000,CSC,total_ms,역전 발생,0.22,0.23,0.22786851050878174
