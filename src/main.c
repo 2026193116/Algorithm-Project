@@ -3,6 +3,9 @@
 #include <stddef.h>
 #include <time.h>
 
+#include "data_generator.h"
+#include "benchmark.h"
+
 int main(void) {
 
     srand(42);
