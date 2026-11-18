@@ -4,10 +4,10 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "C 디버그 (src/main.c)",
+      "name": "C 디버그 (src/main_density.c)",
       "type": "cppdbg",
       "request": "launch",
-      "program": "${workspaceFolder}/src/main.debug.out",
+      "program": "${workspaceFolder}/src/main_density.debug.out",
       "args": [],
       "stopAtEntry": false,
       "cwd": "${workspaceFolder}",
@@ -57,10 +57,10 @@
       "justMyCode": true
     },
     {
-      "name": "Python 디버그 (src/main.py)",
+      "name": "Python 디버그 (src/main_density.py)",
       "type": "debugpy",
       "request": "launch",
-      "program": "${workspaceFolder}/src/main.py",
+      "program": "${workspaceFolder}/src/main_density.py",
       "cwd": "${workspaceFolder}",
       "console": "integratedTerminal",
       "justMyCode": true

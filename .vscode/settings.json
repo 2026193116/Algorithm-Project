@@ -7,8 +7,8 @@
   // Code Runner — 편집기 오른쪽 위 ▶ 버튼으로 열려 있는 파일 하나를 실행한다.
   //
   // 기본 설정을 그대로 쓰면 두 가지가 깨진다.
-  //  - C: `gcc main.c -o main`으로 파일 하나만 컴파일해 링크가 실패한다.
-  //       Makefile의 `%.out` 규칙을 거치게 해 같은 폴더의 .c를 함께 빌드한다.
+  //  - C: 파일 하나만 컴파일하면 필요한 구현 파일이 빠져 링크가 실패한다.
+  //       Makefile의 `%.out` 규칙을 거쳐 같은 폴더의 .c를 함께 빌드한다.
   //  - Python: `python`을 찾는데 이미지에는 `python3`만 있다.
   "code-runner.executorMap": {
     "c": "cd $dir && make -f $workspaceRoot/Makefile $fileNameWithoutExt.out && ./$fileNameWithoutExt.out",

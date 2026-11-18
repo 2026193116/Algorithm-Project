@@ -20,11 +20,11 @@ all: test
 
 run: run-c run-py
 
-run-c: src/main.out
-	@./src/main.out
+run-c: src/main_density.out
+	@./src/main_density.out
 
 run-py:
-	@python3 src/main.py
+	@python3 src/main_density.py
 
 test: test-c test-py
 
@@ -34,7 +34,7 @@ test-c: tests/test_sort.out
 test-py:
 	@python3 -m unittest discover -s tests -v
 
-debug: src/main.debug.out
+debug: src/main_density.debug.out
 
 # 파일 하나를 그 자리에서 빌드한다. 같은 폴더의 .c를 함께 링크하므로 헤더에
 # 선언만 있고 구현이 옆 파일에 있어도 된다. 대신 **한 폴더에 main은 하나만** 둔다.

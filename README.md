@@ -135,7 +135,7 @@ Codespaces나 Dev Containers로 열었다면 편집기에서 바로 됩니다.
 터미널에서 직접 부를 수도 있습니다.
 
 ```sh
-make src/main.debug.out && ./src/main.debug.out
+make src/main_density.debug.out && ./src/main_density.debug.out
 ```
 
 ### ▶ 버튼에 대해
@@ -171,9 +171,9 @@ algorithm-env/
 ├── Makefile                         # run · test · debug · clean
 ├── src/
 │   ├── sort.h · sort.c              # C 구현
-│   ├── main.c                       # C 실행 예제
+│   ├── main_density.c               # C density 벤치마크
 │   ├── sort.py                      # Python 구현
-│   └── main.py                      # Python 실행 예제
+│   └── main_density.py              # Python density 벤치마크
 └── tests/
     ├── test_sort.c                  # C 유닛 테스트 (표준 C만 사용)
     └── test_sort.py                 # Python 유닛 테스트 (unittest)

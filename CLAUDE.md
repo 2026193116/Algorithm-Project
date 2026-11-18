@@ -17,7 +17,7 @@
 ## 구조와 규약
 
 ```plaintext
-src/    sort.h · sort.c · main.c · sort.py · main.py
+src/    sort.h · sort.c · main_density.c · sort.py · main_density.py
 tests/  test_sort.c · test_sort.py
 ```
 
