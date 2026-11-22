@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1100" height="820" viewBox="0 0 1100 820" role="img" aria-labelledby="title desc">
+  <title id="title">희소 행렬 실험 흐름</title>
+  <desc id="desc">실험 조건 설정부터 행렬 생성, Dense와 CSR 및 CSC 계산, 정확성 검증, 시간과 메모리 측정, CSV 저장 및 분석 그래프 생성까지의 흐름도.</desc>
+  <defs>
+    <style>
+      text{font-family:Arial,'Noto Sans KR','Malgun Gothic',sans-serif;fill:#172033}
+      .title{font-size:25px;font-weight:700}.subtitle{font-size:14px;fill:#526078}
+      .head{font-size:15px;font-weight:700}.body{font-size:12px;fill:#3e4b61}.tiny{font-size:11px;fill:#526078}
+      .step{fill:#fff;stroke:#b9c7d8;stroke-width:1.5}.setup{fill:#edf4ff;stroke:#80aee8;stroke-width:1.5}
+      .compute{fill:#f2efff;stroke:#a99add;stroke-width:1.5}.check{fill:#eaf8f1;stroke:#72bd91;stroke-width:1.5}
+      .measure{fill:#fff6e6;stroke:#e3b45e;stroke-width:1.5}.output{fill:#fff0ee;stroke:#e89b8e;stroke-width:1.5}
+      .arrow{fill:none;stroke:#65748b;stroke-width:2;marker-end:url(#arrow)}
+    </style>
+    <marker id="arrow" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto"><path d="M0,0 L10,4 L0,8 Z" fill="#65748b"/></marker>
+  </defs>
+  <rect width="1100" height="820" rx="18" fill="#fbfcfe"/>
+  <text x="550" y="42" text-anchor="middle" class="title">희소 행렬 성능 비교 실험 흐름</text>
+  <text x="550" y="67" text-anchor="middle" class="subtitle">동일 조건의 행렬을 세 저장 방식으로 계산하고, 검증된 결과를 기록·분석</text>
+
+  <rect x="350" y="95" width="400" height="74" rx="13" class="setup"/>
+  <text x="550" y="123" text-anchor="middle" class="head">1. 실험 조건 설정</text>
+  <text x="550" y="147" text-anchor="middle" class="body">행렬 크기 · 목표 Density · 구조(Random / Banded / Row / Block) · 언어</text>
+
+  <rect x="350" y="205" width="400" height="80" rx="13" class="setup"/>
+  <text x="550" y="235" text-anchor="middle" class="head">2. 행렬 A와 벡터 x 생성</text>
+  <text x="550" y="260" text-anchor="middle" class="body">A에서 NNZ와 실제 Density를 계산하고 동일한 x를 준비</text>
+  <path d="M550 169 V205" class="arrow"/>
+
+  <rect x="350" y="325" width="400" height="90" rx="13" class="compute"/>
+  <text x="550" y="355" text-anchor="middle" class="head">3. 기준 계산 및 저장 형식 준비</text>
+  <text x="550" y="380" text-anchor="middle" class="body">Dense로 y = Ax 계산 → 같은 A를 CSR과 CSC로 변환</text>
+  <text x="550" y="400" text-anchor="middle" class="tiny">변환 시간은 CSR·CSC 각각 측정</text>
+  <path d="M550 285 V325" class="arrow"/>
+
+  <path d="M550 415 V445 H210 V465 M550 445 V465 M550 445 H890 V465" class="arrow"/>
+  <rect x="55" y="465" width="310" height="88" rx="13" class="compute"/>
+  <text x="210" y="495" text-anchor="middle" class="head">4a. Dense MatVec</text>
+  <text x="210" y="521" text-anchor="middle" class="body">전체 원소를 순회하여 결과 계산</text>
+  <rect x="395" y="465" width="310" height="88" rx="13" class="compute"/>
+  <text x="550" y="495" text-anchor="middle" class="head">4b. CSR MatVec</text>
+  <text x="550" y="521" text-anchor="middle" class="body">행 단위로 0이 아닌 원소 계산</text>
+  <rect x="735" y="465" width="310" height="88" rx="13" class="compute"/>
+  <text x="890" y="495" text-anchor="middle" class="head">4c. CSC MatVec</text>
+  <text x="890" y="521" text-anchor="middle" class="body">열 단위로 0이 아닌 원소 계산</text>
+
+  <path d="M210 553 V585 H550 M550 553 V585 M890 553 V585 H550 V605" class="arrow"/>
+  <rect x="350" y="605" width="400" height="78" rx="13" class="check"/>
+  <text x="550" y="635" text-anchor="middle" class="head">5. 정확성 검증</text>
+  <text x="550" y="660" text-anchor="middle" class="body">CSR·CSC 결과를 Dense 기준 결과와 비교 (valid)</text>
+
+  <path d="M550 683 V710" class="arrow"/>
+  <rect x="350" y="710" width="400" height="80" rx="13" class="measure"/>
+  <text x="550" y="739" text-anchor="middle" class="head">6. 성능 지표 기록 및 결과 분석</text>
+  <text x="550" y="763" text-anchor="middle" class="body">변환 시간 · MatVec 시간 · 메모리 · NNZ · 실제 Density</text>
+  <text x="550" y="781" text-anchor="middle" class="tiny">CSV 저장 → 언어별 결과 통합·검증 → figures 그래프 생성</text>
+
+  <rect x="48" y="602" width="240" height="75" rx="12" class="output"/>
+  <text x="168" y="632" text-anchor="middle" class="head">검증 실패</text>
+  <text x="168" y="655" text-anchor="middle" class="body">실패 결과는 확인·수정</text>
+  <path d="M350 644 H288" class="arrow"/>
+  <text x="318" y="630" text-anchor="middle" class="tiny">FAIL</text>
+  <path d="M750 644 H805 V245 H750" class="arrow"/>
+  <text x="820" y="625" class="tiny">PASS</text>
+</svg>
