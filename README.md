@@ -83,22 +83,14 @@ make test
 - 결과
 
 ```console
-ok    섞인 배열
-ok    이미 정렬된 배열
-ok    역순 배열
-ok    중복이 있는 배열
-ok    원소 하나
-ok    빈 배열
-
-6 checks, 0 failures
-...
-Ran 7 tests in 0.001s
+Ran 5 tests in 0.001s
 
 OK
 ```
 
-테스트가 하나라도 실패하면 `make`가 0이 아닌 코드로 끝납니다. 과제를 내기
-전에 이 명령이 통과하는지 확인하세요.
+`make test`는 C 소스 전체의 컴파일 가능 여부와 C/Python 행렬 연산 테스트를
+확인합니다. Python 테스트는 `src/*.py`의 구문도 확인합니다. 하나라도 실패하면
+명령이 0이 아닌 코드로 끝납니다.
 
 | 명령 | 하는 일 |
 | --- | --- |
@@ -170,13 +162,14 @@ algorithm-env/
 ├── .vscode/                         # 빌드·디버그 설정 (F5, Cmd+Shift+B)
 ├── Makefile                         # run · test · debug · clean
 ├── src/
-│   ├── sort.h · sort.c              # C 구현
-│   ├── main_density.c               # C density 벤치마크
-│   ├── sort.py                      # Python 구현
-│   └── main_density.py              # Python density 벤치마크
+│   ├── dense.h · dense.c · dense.py # Dense 행렬-벡터 곱
+│   ├── csr.h · csr.c · csr.py       # CSR 변환 및 행렬-벡터 곱
+│   ├── csc.h · csc.c · csc.py       # CSC 변환 및 행렬-벡터 곱
+│   ├── data_generator.*             # 행렬 생성
+│   └── main*.c · main*.py            # 벤치마크 실행 파일
 └── tests/
-    ├── test_sort.c                  # C 유닛 테스트 (표준 C만 사용)
-    └── test_sort.py                 # Python 유닛 테스트 (unittest)
+    ├── test.c                       # C 검사 (표준 C만 사용)
+    └── test.py                      # Python 검사 (unittest)
 ```
 
 ## 규약
