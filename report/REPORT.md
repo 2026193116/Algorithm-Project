@@ -86,25 +86,32 @@ CSR이 행을 기준으로 데이터를 저장한다면 CSC는 열을 기준으�
 
 | 파일 | 역할 |
 |---|---|
-| `src/dense.c` | Dense 행렬 생성 및 행렬-벡터 곱셈 구현 |
+| `src/dense.c` / `src/dense.py` | Dense 행렬-벡터 곱셈 구현 |
 | `src/csr.c` | CSR 자료구조 변환 및 행렬-벡터 곱셈 구현 |
 | `src/csc.c` | CSC 자료구조 변환 및 행렬-벡터 곱셈 구현 |
-| `src/data_generator.c` | 실험에 사용할 행렬 데이터 생성 |
-| `src/data_generator.h` | 데이터 생성 관련 함수 선언 |
+| `src/csr.py` / `src/csc.py` | Python CSR·CSC 변환 및 행렬-벡터 곱셈 구현 |
+| `src/data_generator.c` / `src/data_generator.py` | 실험에 사용할 행렬 데이터 생성 |
 | `src/benchmark.c` | 각 저장 방식의 성능 측정 |
-| `src/main.c` | C언어 실험 실행 및 결과 출력 |
-| `src/main.py` | Python 실험 실행 및 결과 출력 |
-| `src/benchmark.h` | 벤치마크 관련 함수 선언 |
+| `src/main*.c` / `src/main*.py` | 기본 및 Density 실험 실행과 결과 기록 |
+| `tests/test.c` | C 구현의 행렬 연산·생성 테스트 |
+| `tests/test.py` | Python 구현 테스트 및 `src/*.py` 구문 검사 |
+| `Makefile` | 전체 C 구문 검사와 C·Python 테스트 실행 |
 | `report/` | CSV 실험 결과 및 분석 자료 저장 |
 | `figures/` | 실험 결과 그래프 저장 |
 
 C언어와 Python 구현을 각각 분리하면서도 동일한 실험 조건을 적용할 수 있도록 구성하였습니다.
+실험 프로그램을 실행하기 전에는 `make test`로 테스트를 수행합니다. 이 명령은
+모든 C 소스의 구문을 검사하고, Dense·CSR·CSC 연산 및 행렬 생성 테스트를 실행하며,
+Python 소스 구문과 기능 테스트도 확인합니다. 테스트가 실패하면 명령이 실패 상태로
+끝나므로, 벤치마크를 실행하기 전에 구현 오류를 확인할 수 있습니다. 이 검사는
+벤치마크 전체를 실행하는 대신 핵심 연산과 소스의 기본 유효성을 빠르게 점검합니다.
 
 ![파일 구조도](./file-architecture.svg)
 
 ### 2.4 전체 실험 흐름
 
-실험은 다음과 같은 순서로 진행됩니다.
+실험 프로그램을 실행하기 전 `make test`로 소스 구문과 핵심 연산을 점검합니다.
+테스트를 통과하면 실험은 다음과 같은 순서로 진행됩니다.
 
 1. 실험 조건에 맞는 행렬과 벡터 생성
 2. Dense 형식으로 행렬 저장

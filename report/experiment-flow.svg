@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1100" height="820" viewBox="0 0 1100 820" role="img" aria-labelledby="title desc">
   <title id="title">희소 행렬 실험 흐름</title>
-  <desc id="desc">실험 조건 설정부터 행렬 생성, Dense와 CSR 및 CSC 계산, 정확성 검증, 시간과 메모리 측정, CSV 저장 및 분석 그래프 생성까지의 흐름도.</desc>
+  <desc id="desc">make test로 C와 Python 코드를 사전 점검한 뒤 행렬 생성, Dense와 CSR 및 CSC 계산, 정확성 검증, 성능 측정, CSV 저장과 그래프 생성을 수행하는 흐름도.</desc>
   <defs>
     <style>
       text{font-family:Arial,'Noto Sans KR','Malgun Gothic',sans-serif;fill:#172033}
@@ -20,6 +20,12 @@
   <rect x="350" y="95" width="400" height="74" rx="13" class="setup"/>
   <text x="550" y="123" text-anchor="middle" class="head">1. 실험 조건 설정</text>
   <text x="550" y="147" text-anchor="middle" class="body">행렬 크기 · 목표 Density · 구조(Random / Banded / Row / Block) · 언어</text>
+
+  <rect x="40" y="95" width="270" height="100" rx="13" class="check"/>
+  <text x="175" y="123" text-anchor="middle" class="head">실행 전 테스트</text>
+  <text x="175" y="148" text-anchor="middle" class="body">make test</text>
+  <text x="175" y="171" text-anchor="middle" class="tiny">C·Python 구문 및 핵심 기능 점검</text>
+  <path d="M310 145 H350" class="arrow"/>
 
   <rect x="350" y="205" width="400" height="80" rx="13" class="setup"/>
   <text x="550" y="235" text-anchor="middle" class="head">2. 행렬 A와 벡터 x 생성</text>

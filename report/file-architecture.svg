@@ -1,6 +1,6 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1100" height="760" viewBox="0 0 1100 760" role="img" aria-labelledby="title desc">
+<svg xmlns="http://www.w3.org/2000/svg" width="1100" height="880" viewBox="0 0 1100 880" role="img" aria-labelledby="title desc">
   <title id="title">실험 코드 및 결과 파일 구성</title>
-  <desc id="desc">C와 Python 실행 경로가 같은 데이터 생성, 저장 방식 구현, 벤치마크 책임을 공유하고 결과 CSV를 통합·검증·시각화하는 구조도.</desc>
+  <desc id="desc">C와 Python 실험 코드의 구조, make test가 실행하는 테스트 파일과 사전 점검, 결과 CSV의 통합·검증·시각화 구성을 보여 주는 구조도.</desc>
   <defs>
     <style>
       text{font-family:Arial,'Noto Sans KR','Malgun Gothic',sans-serif;fill:#172033}
@@ -14,7 +14,7 @@
     </style>
     <marker id="arrow" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto"><path d="M0,0 L10,4 L0,8 Z" fill="#68758a"/></marker>
   </defs>
-  <rect width="1100" height="760" rx="18" fill="#fbfcfe"/>
+  <rect width="1100" height="880" rx="18" fill="#fbfcfe"/>
   <text x="550" y="42" text-anchor="middle" class="title">실험 파일의 유기적 구성</text>
   <text x="550" y="67" text-anchor="middle" class="subtitle">언어별 실행부 → 공통 연산 역할 → 결과 통합·검증·그래프</text>
 
@@ -71,5 +71,15 @@
   <text x="900" y="616" text-anchor="middle" class="label">figures/</text><text x="900" y="641" text-anchor="middle" class="small">time · memory · structure · language 그래프</text>
   <path d="M900 548 V585" class="line"/>
 
-  <text x="550" y="710" text-anchor="middle" class="tiny">실행 파일은 실험을 수행하고, report/는 결과를 보관하며, figures/는 결과를 시각화합니다.</text>
+  <rect x="35" y="690" width="1015" height="135" rx="14" fill="#f8f6ff" stroke="#ded7f4"/>
+  <text x="542" y="719" text-anchor="middle" class="head">실행 전 점검 · make test</text>
+  <rect x="75" y="740" width="390" height="62" rx="10" class="c"/>
+  <text x="270" y="765" text-anchor="middle" class="label">tests/test.c</text>
+  <text x="270" y="786" text-anchor="middle" class="small">C 구문 검사 · Dense/CSR/CSC · 행렬 생성</text>
+  <rect x="620" y="740" width="390" height="62" rx="10" class="py"/>
+  <text x="815" y="765" text-anchor="middle" class="label">tests/test.py</text>
+  <text x="815" y="786" text-anchor="middle" class="small">Python 구문 검사 · 행렬 연산 · 생성기</text>
+  <path d="M465 771 H620" class="line"/>
+
+  <text x="550" y="855" text-anchor="middle" class="tiny">테스트 통과 후 실험을 실행합니다. report/는 결과를 보관하고 figures/는 결과를 시각화합니다.</text>
 </svg>
