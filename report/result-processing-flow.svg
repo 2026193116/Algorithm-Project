@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="629" viewBox="0 0 1400 880">
+<defs><marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L0,6 L9,3 z" fill="#64748b"/></marker></defs><style>
+text{font-family:'Noto Sans CJK KR','NanumSquare','Malgun Gothic',sans-serif;fill:#263449}
+.title{font-size:30px;font-weight:700;fill:#172033}
+.sub{font-size:17px;font-weight:500;fill:#475569}
+.head{font-size:20px;font-weight:700;fill:#172033}
+.txt{font-size:17px;font-weight:500;fill:#263449}
+.small{font-size:14px;font-weight:500;fill:#475569}
+.mono{font-family:monospace;font-size:16px;font-weight:600;fill:#172033}
+.white{font-size:17px;font-weight:700;fill:#fff}
+.box{stroke-width:2.5;rx:14}
+.arrow{stroke:#64748b;stroke-width:3;fill:none;marker-end:url(#arrow)}
+.dash{stroke:#94a3b8;stroke-width:2;stroke-dasharray:7 6;fill:none}
+</style>
+<rect width="100%" height="100%" fill="#ffffff"/>
+<text x="700.0" y="54" text-anchor="middle" class="title">2.4 결과 통합·검증·시각화 파일의 연결 관계</text>
+<text x="700.0" y="86" text-anchor="middle" class="sub">언어별 실험 결과가 통합 데이터와 보고서 그래프로 이어지는 과정</text>
+<rect x="60" y="160" width="370" height="155" rx="16" fill="#eff6ff" stroke="#4f6bed" stroke-width="2.5"/><text x="245.0" y="196" text-anchor="middle" class="head">1. 원본 결과 CSV</text><text x="245.0" y="232" text-anchor="middle" class="small">c_structure_results.csv</text><text x="245.0" y="260" text-anchor="middle" class="small">python_structure_results.csv</text><rect x="515" y="160" width="370" height="155" rx="16" fill="#ecfdf5" stroke="#23834a" stroke-width="2.5"/><text x="700.0" y="196" text-anchor="middle" class="head">2. 결과 통합</text><text x="700.0" y="232" text-anchor="middle" class="small">merge_results.py</text><text x="700.0" y="260" text-anchor="middle" class="small">merge_density_results.py</text><rect x="970" y="160" width="370" height="155" rx="16" fill="#fff7ed" stroke="#d97706" stroke-width="2.5"/><text x="1155.0" y="196" text-anchor="middle" class="head">3. 통합 CSV</text><text x="1155.0" y="232" text-anchor="middle" class="small">combined_structure_results.csv</text><text x="1155.0" y="260" text-anchor="middle" class="small">combined_density_results.csv</text><rect x="60" y="440" width="370" height="155" rx="16" fill="#fdf2f8" stroke="#be185d" stroke-width="2.5"/><text x="245.0" y="476" text-anchor="middle" class="head">4. 검증</text><text x="245.0" y="512" text-anchor="middle" class="small">validate_results.py</text><text x="245.0" y="540" text-anchor="middle" class="small">조건 누락·중복·NNZ·valid 검사</text><rect x="515" y="440" width="370" height="155" rx="16" fill="#f5f3ff" stroke="#7c3aed" stroke-width="2.5"/><text x="700.0" y="476" text-anchor="middle" class="head">5. 그래프 생성</text><text x="700.0" y="512" text-anchor="middle" class="small">plot_results.py</text><text x="700.0" y="540" text-anchor="middle" class="small">plot_density_results.py</text><rect x="970" y="440" width="370" height="155" rx="16" fill="#f1f5f9" stroke="#64748b" stroke-width="2.5"/><text x="1155.0" y="476" text-anchor="middle" class="head">6. 보고서 반영</text><text x="1155.0" y="512" text-anchor="middle" class="small">PNG / SVG 그래프</text><text x="1155.0" y="540" text-anchor="middle" class="small">REPORT.md에서 결과와 해석 제시</text><path d="M430 238 L500 238" class="arrow"/><path d="M885 238 L955 238" class="arrow"/>
+<path d="M1155 325 L1155 395 L245 395 L245 428" class="arrow"/>
+<path d="M430 518 L500 518" class="arrow"/><path d="M885 518 L955 518" class="arrow"/>
+<rect x="70" y="680" width="1260" height="105" rx="14" fill="#f8fafc" stroke="#cbd5e1" stroke-width="2"/>
+<text x="105" y="720" class="head">파일 간 유기성</text><text x="105" y="755" class="txt">언어별 CSV를 통합·검증한 뒤 그래프로 변환하여 보고서의 실험 결과와 연결한다.</text></svg>
