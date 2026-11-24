@@ -250,29 +250,18 @@ C의 1000×1000 행렬에서 Density 10%일 때 메모리 사용량은 Dense 8,0
 반복 연산 횟수를 \(k\)라고 하면, CSR의 전체 계산 시간은 다음과 같이 나타낼 수 있다.
 
 $$
-T_{\text{CSR}}(k)
-=
-T_{\text{CSR conversion}}
-+
-k \times T_{\text{CSR matvec}}
+T_{\text{CSR}}(k) = T_{\text{CSR conversion}} + k \times T_{\text{CSR matvec}}
 $$
 
 CSC도 같은 방식으로 표현할 수 있다.
 
 $$
-T_{\text{CSC}}(k)
-=
-T_{\text{CSC conversion}}
-+
-k \times T_{\text{CSC matvec}}
+T_{\text{CSC}}(k) = T_{\text{CSC conversion}} + k \times T_{\text{CSC matvec}}
 $$
 
 반면 Dense는 별도의 변환 과정이 없으므로 다음과 같다.
 
-$$
-T_{\text{Dense}}(k)
-=
-k \times T_{\text{Dense matvec}}
+T_{\text{Dense}}(k) = k \times T_{\text{Dense matvec}}
 $$
 
 따라서 반복 횟수가 증가할수록 희소 형식에서 최초 변환 비용이 전체 계산 시간에서 차지하는 비중은 감소한다. 한 번의 행렬-벡터 곱셈에서는 Dense가 유리하더라도 동일한 행렬을 여러 번 재사용하는 환경에서는 CSR이나 CSC가 더 효율적일 가능성이 있다. 실제로 어느 시점부터 희소 형식이 유리해지는지는 변환 시간과 각 저장 방식의 행렬-벡터 곱셈 시간에 따라 달라진다.
