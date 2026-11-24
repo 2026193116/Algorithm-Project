@@ -395,4 +395,7 @@ C언어의 동적 메모리 관리도 이번 프로젝트에서 다시 경험할
 
 ## 8. 참고 자료
 
-- 사용한 AI: GitHub Copilot, ChatGPT
+- 사용한 AI: GitHub Copilot1
+1. https://docs.scipy.org/doc/scipy/tutorial/sparse.html
+2. https://netlib.sandia.gov/templates/templates.pdf
+3. https://www.intel.com/content/www/us/en/docs/onemkl/developer-reference-dpcpp/2026-2/sparse-storage-formats.html
