@@ -261,6 +261,7 @@ $$
 
 반면 Dense는 별도의 변환 과정이 없으므로 다음과 같다.
 
+$$
 T_{\text{Dense}}(k) = k \times T_{\text{Dense matvec}}
 $$
 
