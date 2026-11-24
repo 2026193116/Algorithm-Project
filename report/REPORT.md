@@ -63,7 +63,7 @@ $$
 | `src/main.c` | 기본 구조 실험의 실행 진입점이다. 행렬·벡터 생성, Dense 계산, CSR·CSC 변환과 계산, 결과 검증, 벤치마크, CSV 저장 및 동적 메모리 해제를 순서대로 수행한다. |
 | `src/main_density.c` | Density 심화 실험의 C 실행 진입점이다. 크기 100·500·1000·2000, Density 1~50%(1% 간격), 네 구조를 반복 실행하고 `c_density_results.csv`를 생성한다. |
 
-![C언어 파일 작동 흐름](./c-implementation-flow)
+![C언어 파일 작동 흐름](./c-implementation-flow.svg)
 
 ### 2.3 Python 구현 파일
 
@@ -77,7 +77,7 @@ $$
 | `src/main.py` | 기본 구조 실험을 실행한다. 크기 100·500·1000·2000, 대표 Density 1·5·10·30·50%, 네 구조를 조합하여 결과를 CSV에 기록한다. |
 | `src/main_density.py` | Density를 1~50%까지 1% 간격으로 바꿔 심화 실험을 수행하고 `python_density_results.csv`를 만든다. 변환 시간은 워밍업 후 20회 반복한 중앙값으로 별도 기록한다. |
 
-![Python 파일 작동 흐름](./python-implementation-flow)
+![Python 파일 작동 흐름](./python-implementation-flow.svg)
 
 ### 2.4 결과 통합·검증·시각화 파일
 
@@ -92,7 +92,7 @@ $$
 | `tests/test.py` | Python 소스 구문, Dense·CSR·CSC 결과 일치, 영행렬 처리, 생성기 재현성 및 잘못된 입력 처리를 `unittest`로 검사한다. |
 | `Makefile` | C 구문 검사와 C·Python 테스트 및 실행을 명령으로 묶는다. `make test`, `make run` 등을 제공한다. |
 
-![결과 분석 파일 작동 흐름](./result-processing-flow)
+![결과 분석 파일 작동 흐름](./result-processing-flow.svg)
 
 ### 2.5 실험 실행 흐름
 
