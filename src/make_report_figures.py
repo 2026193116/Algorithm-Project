@@ -1,16 +1,3 @@
-"""보고서(REPORT.md)에 들어가는 결과 그래프 8개를 통합 CSV에서 만든다.
-
-    python3 src/make_report_figures.py
-
-입력 : report/combined_density_results.csv
-출력 : report/*.svg  (보고서가 참조하는 파일명 그대로)
-
-모든 그래프는 같은 규칙을 쓴다.
-  - 라벨은 한국어로 통일한다.
-  - 행렬 크기 비교는 두 언어 모두 'Random, Density 10%' 조건으로 같다.
-  - Density별 그래프에서 같은 시리즈 중앙값의 1.2배를 넘는 Dense 측정값은
-    '이상값'으로 표시한다(값은 지우지 않는다).
-"""
 import csv
 import math
 import statistics
@@ -26,14 +13,13 @@ ROOT = Path(__file__).resolve().parents[1]
 CSV_PATH = ROOT / "report" / "combined_density_results.csv"
 OUT_DIR = ROOT / "report"
 
-# 한글이 깨지지 않도록 설치된 글꼴 중 첫 번째를 쓴다.
 available = {f.name for f in font_manager.fontManager.ttflist}
 for name in ["Noto Sans CJK KR", "NanumGothic", "Malgun Gothic", "AppleGothic", "DejaVu Sans"]:
     if name in available:
         plt.rcParams["font.family"] = name
         break
 plt.rcParams["axes.unicode_minus"] = False
-plt.rcParams["svg.fonttype"] = "path"      # 글자를 도형으로 저장해 글꼴이 없는 PC에서도 똑같이 보인다
+plt.rcParams["svg.fonttype"] = "path"      
 
 COLORS = {"Dense": "#475569", "CSR": "#2563eb", "CSC": "#ea580c"}
 MARKERS = {"Dense": "o", "CSR": "s", "CSC": "^"}
