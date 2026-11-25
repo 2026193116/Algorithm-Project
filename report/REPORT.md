@@ -319,7 +319,6 @@ C는 자료형 크기를 바탕으로 배열 메모리를 계산하고, Python�
 
 -사용한 AI : Copilot, Chat GPT
 
-1. [고급알고리즘 개인프로젝트 지침](https://lec-algorithm.github.io/lecture/article/project-2026/)
-2. [SciPy Tutorial — Sparse matrices](https://docs.scipy.org/doc/scipy/tutorial/sparse.html)
-3. [Netlib — Templates for the Solution of Linear Systems](https://netlib.sandia.gov/templates/templates.pdf)
-4. [Intel oneMKL — Sparse Storage Formats](https://www.intel.com/content/www/us/en/docs/onemkl/developer-reference-dpcpp/2026-2/sparse-storage-formats.html)
+1. [SciPy Tutorial — Sparse matrices](https://docs.scipy.org/doc/scipy/tutorial/sparse.html)
+2. [Netlib — Templates for the Solution of Linear Systems](https://netlib.sandia.gov/templates/templates.pdf)
+3. [Intel oneMKL — Sparse Storage Formats](https://www.intel.com/content/www/us/en/docs/onemkl/developer-reference-dpcpp/2026-2/sparse-storage-formats.html)
