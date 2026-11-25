@@ -1,14 +1,3 @@
-/*
- * verify_density.c
- *
- * main_density.c 의 `valid` 열은 "시간 측정이 성공했는가"만 뜻한다.
- * 이 프로그램은 main_density.c 와 똑같은 순서(srand(42), 크기 → Density → 구조)로
- * 행렬과 입력 벡터를 다시 만들어, 각 조건에서 CSR·CSC 결과가 Dense 결과와
- * 일치하는지 직접 비교한다. 또한 report/c_density_results.csv 의 조건과 nnz가
- * 같은 순서로 일치하는지 확인해, 재현한 행렬이 실험에 쓴 행렬과 같은 흐름임을 점검한다.
- *
- * 빌드와 실행은 프로젝트 루트에서 `make verify-density` 로 한다.
- */
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -45,12 +34,12 @@ int main(void) {
         printf("cannot open %s\n", csv_path);
         return EXIT_FAILURE;
     }
-    if (fgets(line, sizeof line, csv) == NULL) {      /* 헤더 */
+    if (fgets(line, sizeof line, csv) == NULL) {
         fclose(csv);
         return EXIT_FAILURE;
     }
 
-    srand(42);                                         /* main_density.c 와 동일 */
+    srand(42);                                      
 
     const int sizes[] = {100, 500, 1000, 2000};
     const MatrixStructure structures[] = {
@@ -74,7 +63,7 @@ int main(void) {
                 double *yc = malloc((size_t)n * sizeof(double));
                 if (!x || !yd || !yr || !yc) { printf("alloc failed\n"); return EXIT_FAILURE; }
 
-                for (int i = 0; i < n; i++) x[i] = (double)(rand() % 10 + 1);  /* main_density.c 와 동일 */
+                for (int i = 0; i < n; i++) x[i] = (double)(rand() % 10 + 1);  
 
                 CSRMatrix csr = {0};
                 CSCMatrix csc = {0};
@@ -91,7 +80,6 @@ int main(void) {
                     printf("MISMATCH n=%d density=%.2f structure=%s\n", n, density, structure_name(structures[k]));
                 }
 
-                /* CSV의 Dense, CSR, CSC 세 행이 이 조건과 같은지 확인 */
                 for (int r = 0; r < 3; r++) {
                     char lang[16], st[16], alg[16];
                     int rows, cols, csv_nnz;
