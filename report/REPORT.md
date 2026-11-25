@@ -224,10 +224,10 @@ C와 Python의 개별 결과를 통합한 뒤 `validate_results.py`로 다음 �
 
 | 항목 | 내용 |
 |---|---|
-| 실행 환경 | Docker 컨테이너(`debian:trixie-slim`, 수업 템플릿 기본 이미지) |
-| C 컴파일러 | gcc 14.2, `-std=c17 -Wall -Wextra -O2` (템플릿 이미지 기준) |
-| Python | 3.13 (템플릿 이미지 기준), 표준 라이브러리 + 그래프용 `matplotlib` |
-| CPU · 메모리 · 호스트 OS | **(제출 전 본인 환경의 값으로 기입: CPU 모델, 코어 수, RAM, Windows/macOS/Linux)** |
+| 실행 환경 | Docker 컨테이너(`debian:trixie-slim` |
+| C 컴파일러 | gcc 14.2, `-std=c17 -Wall -Wextra -O2` |
+| Python | 3.13, 표준 라이브러리 + 그래프용 `matplotlib` |
+| CPU · 메모리 · 호스트 OS | CPU: Intel Core Ultra 7 256V (8코어) / RAM: 16GB / 호스트 OS: Windows 11 Home (25H2) |
 
 이 실험의 결과를 읽을 때 다음 한계를 전제한다.
 
