@@ -57,11 +57,11 @@ src/main_density.debug.out: src/main_density.c $(COMMON_C) $(COMMON_H)
 
 # C Density 실험 결과(report/c_density_results.csv)를 같은 난수 순서로 재현해
 # CSR·CSC가 Dense와 일치하는지 검사한다. (`valid` 열은 정확성 검사가 아니다.)
-tools/verify_density.out: tools/verify_density.c $(COMMON_C) $(COMMON_H)
-	$(CC) $(CFLAGS) -Isrc -o $@ tools/verify_density.c src/data_generator.c src/dense.c src/csr.c src/csc.c -lm
+src/verify_density.out: src/verify_density.c $(COMMON_C) $(COMMON_H)
+	$(CC) $(CFLAGS) -Isrc -o $@ src/verify_density.c src/data_generator.c src/dense.c src/csr.c src/csc.c -lm
 
-verify-density: tools/verify_density.out
-	@./tools/verify_density.out
+verify-density: src/verify_density.out
+	@./src/verify_density.out
 
 # 파일 하나를 그 자리에서 빌드한다. 같은 폴더의 .c를 함께 링크하므로 헤더에
 # 선언만 있고 구현이 옆 파일에 있어도 된다. 대신 **한 폴더에 main은 하나만** 둔다.

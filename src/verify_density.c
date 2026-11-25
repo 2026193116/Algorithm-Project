@@ -29,17 +29,20 @@ int main(void) {
     const char *csv_path = "report/c_density_results.csv";
     FILE *csv = fopen(csv_path, "r");
     char line[512];
+    static const char *algorithms[] = {"Dense", "CSR", "CSC"};
 
     if (csv == NULL) {
         printf("cannot open %s\n", csv_path);
         return EXIT_FAILURE;
     }
-    if (fgets(line, sizeof line, csv) == NULL) {
+    if (fgets(line, sizeof line, csv) == NULL ||
+        strcmp(line, "language,structure,algorithm,rows,cols,density,nnz,actual_density,conversion_ms,matvec_ms,memory_bytes,valid\n") != 0) {
         fclose(csv);
+        printf("invalid CSV header\n");
         return EXIT_FAILURE;
     }
 
-    srand(42);                                      
+    srand(42);
 
     const int sizes[] = {100, 500, 1000, 2000};
     const MatrixStructure structures[] = {
@@ -87,7 +90,9 @@ int main(void) {
                     if (fgets(line, sizeof line, csv) == NULL ||
                         sscanf(line, "%15[^,],%15[^,],%15[^,],%d,%d,%lf,%d",
                                lang, st, alg, &rows, &cols, &dens, &csv_nnz) != 7 ||
-                        rows != n || cols != n || strcmp(st, structure_name(structures[k])) != 0 ||
+                        strcmp(lang, "C") != 0 || strcmp(alg, algorithms[r]) != 0 ||
+                        rows != n || cols != n ||
+                        strcmp(st, structure_name(structures[k])) != 0 ||
                         fabs(dens - density) > 1e-9 || csv_nnz != nnz) {
                         csv_mismatch++;
                     }
@@ -99,6 +104,9 @@ int main(void) {
                 free_matrix(A, n);
             }
         }
+    }
+    if (fgets(line, sizeof line, csv) != NULL) {
+        csv_mismatch++;
     }
     fclose(csv);
 
