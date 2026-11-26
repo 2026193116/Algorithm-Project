@@ -7,13 +7,13 @@ INPUT_MD = "REPORT.md"
 OUTPUT_PDF = "report.pdf"
 
 # ================= [여기서 크기 조절] =================
-SVG_WIDTH = "42%"       # 기존 85%의 절반 수준 (원하는 비율로 조절)
-BODY_FONT_PT = 9.5      # 기존 10.5pt에서 1pt 축소
-H1_FONT_PT = 18.0       # 기존 19pt에서 1pt 축소
-H2_FONT_PT = 13.5       # 기존 14.5pt에서 1pt 축소
-H3_FONT_PT = 11.0       # 기존 12pt에서 1pt 축소
-TABLE_FONT_PT = 8.0     # 기존 9pt에서 1pt 축소
-CAPTION_FONT_PT = 7.5   # 캡션 글씨 크기
+SVG_WIDTH = "50%"
+BODY_FONT_PT = 9.5
+H1_FONT_PT = 18.0
+H2_FONT_PT = 13.5
+H3_FONT_PT = 11.0
+TABLE_FONT_PT = 8.0
+CAPTION_FONT_PT = 7.5  
 PAGE_MARGIN = "15mm"
 # ======================================================
 
